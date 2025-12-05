@@ -1,0 +1,11 @@
+grant select, insert, delete on TotalOrder to public;
+grant select, insert, delete on MenuItem to public;
+grant select, insert, delete on Member to public;
+grant select, insert, delete on EventBooking to public;
+grant select, insert, delete on Reservation to public;
+grant select, insert, delete on Room to public;
+grant select, insert, delete on Event to public;
+grant select, insert, delete on Employee to public;
+grant select, insert, delete on HealthRecord to public;
+grant select, insert, delete on Pet to public;
+grant select, insert, delete on Adoption to public;
