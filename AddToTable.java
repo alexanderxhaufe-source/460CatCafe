@@ -1,4 +1,5 @@
-public class AddToTable {
+
+public class TestFunctions {
 	
 	/* ------------------------------------------------------------------------
 	 * addToTable(int)
@@ -91,12 +92,12 @@ public class AddToTable {
 		case 4:
 			// add EventBooking
 			String bookingID="", custID1="", bookDate="", eventID="", 
-				attendanceStatus="", paymentStatus="";
+				attendanceStatus="", paymentStatus="", membershipTier="";
 			query = "INSERT INTO EventBooking (bookingID, custID, bookDate, "
-					+ "eventID, attendanceStatus, paymentStatus) "
+					+ "eventID, attendanceStatus, paymentStatus, membershipTier) "
 					+ "VALUES (" + bookingID + ", " + custID1 + ", " + bookDate 
 					+ ", " + eventID + ", " + attendanceStatus + ", " 
-					+ paymentStatus + ");";
+					+ paymentStatus + ", " + membershipTier + ");";
 			//System.out.println("Successfully added new EventBooking to datatable");
 		break;
 		
@@ -115,14 +116,14 @@ public class AddToTable {
 		case 6:
 			// add Member
 			String memberID="", lastName1="", firstName1="", DoB="", email="", 
-				membershipTier="", emergencyContactAreaCode="", 
+				membershipTier1="", emergencyContactAreaCode="", 
 				emergencyContact="", phoneNoAreaCode="", phoneNo="";
 			query = "INSERT INTO Member (memberID, lastName, firstName, DoB, "
 					+ "email, membershipTier," + " emergencyContactAreaCode, "
 					+ "emergencyContact, phoneNoAreaCode, phoneNo) "
 					+ "VALUES (" + memberID + ", " + lastName1 + ", " + 
 					firstName1 + ", " + DoB + ", " + email + ", " + 
-					membershipTier + ", " + emergencyContactAreaCode + ", " + 
+					membershipTier1 + ", " + emergencyContactAreaCode + ", " + 
 					emergencyContact + ", " + phoneNoAreaCode + ", " + phoneNo 
 					+ ");";
 			//System.out.println("Successfully added new Member to datatable");
@@ -152,12 +153,12 @@ public class AddToTable {
 		case 9:
 			// add Reservation
 			String reservationID="", customerID="", roomID1="", resDate="", 
-				startTime="", duration="", inStatus="";
+				startTime="", duration="", inStatus="", membershipTier2="";
 			query = "INSERT INTO Reservation (reservationID, customerID, roomID"
-					+ ", resDate, startTime, duration, inStatus) "
+					+ ", resDate, startTime, duration, inStatus, membershipTier) "
 					+ "VALUES (" + reservationID + ", " + customerID + ", " + 
 					roomID1 + ", " + resDate + ", " + startTime + ", " + 
-					duration + ", " + inStatus + ");";
+					duration + ", " + inStatus + ", " + membershipTier2 + ");";
 			//System.out.println("Successfully added new Reservation to datatable");
 		break;
 		
@@ -173,12 +174,12 @@ public class AddToTable {
 		case 11:
 			// add TotalOrder
 			String orderID1="", memberID1="", reservationID1="", orderTime="", 
-				totalPrice="", paymentStatus1="";
+				totalPrice="", paymentStatus1="", orderDate="";
 			query = "INSERT INTO TotalOrder (orderID, memberID, reservationID,"
-					+ " orderTime, totalPrice, paymentStatus) "
+					+ " orderTime, totalPrice, paymentStatus, orderDate) "
 					+ "VALUES (" + orderID1 + ", " + memberID1 + ", " + 
 					reservationID1 + ", " + orderTime + ", " + totalPrice + ", "
-					+ paymentStatus1 + " );";
+					+ paymentStatus1 + ", " + orderDate + ");";
 			//System.out.println("Successfully added new TotalOrder to datatable");
 		break;
 		
