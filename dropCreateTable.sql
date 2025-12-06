@@ -1,3 +1,15 @@
+drop table TotalOrder;
+drop table MenuItem;
+drop table Member;
+drop table EventBooking;
+drop table Reservation;
+drop table Room;
+drop table Event;
+drop table Employee;
+drop table HealthRecord;
+drop table Pet;
+drop table Adoption;
+
 CREATE TABLE TotalOrder (
         orderID number(4),
         memberID number(4),
@@ -108,3 +120,4 @@ CREATE TABLE Adoption (
         price number(6,2),
         primary key (appID)
 );
+
