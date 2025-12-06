@@ -51,7 +51,7 @@ public class inputData {
                         Statement stmt = null;
                         ResultSet answer = null;
                         PreparedStatement toAdd = null;
-                        String baseAdd = "insert into TotalOrder values (?,?,?,?,?,?)";
+                        String baseAdd = "insert into TotalOrder values (?,?,?,?,?,?,TO_DATE(?, 'YYYY-MM-DD'))";
                         toAdd = dbconn.prepareStatement(baseAdd);
 
                         try (BufferedReader stream = new BufferedReader(new FileReader("TotalOrder.csv"))) {
@@ -64,6 +64,8 @@ public class inputData {
                                         toAdd.setString(4,splitRow[3]);
                                         myDouble(toAdd,5,splitRow[4]);
                                         myInt(toAdd,6,splitRow[5]);
+                                        toAdd.setString(7,splitRow[6]);
+
 
                                         toAdd.addBatch();
                                 }
@@ -158,7 +160,7 @@ public class inputData {
                         Statement stmt = null;
                         ResultSet answer = null;
                         PreparedStatement toAdd = null;
-                        String baseAdd = "insert into EventBooking values (?,?,TO_DATE(?, 'YYYY-MM-DD'),?,?,?)";
+                        String baseAdd = "insert into EventBooking values (?,?,TO_DATE(?, 'YYYY-MM-DD'),?,?,?,?)";
                         toAdd = dbconn.prepareStatement(baseAdd);
 
                         try (BufferedReader stream = new BufferedReader(new FileReader("EventBooking.csv"))) {
@@ -171,6 +173,8 @@ public class inputData {
                                         myInt(toAdd,4,splitRow[3]);
                                         myInt(toAdd,5,splitRow[4]);
                                         myInt(toAdd,6,splitRow[5]);
+                                        myInt(toAdd,7,splitRow[6]);
+
 
                                         toAdd.addBatch();
                                 }
@@ -193,7 +197,7 @@ public class inputData {
                         Statement stmt = null;
                         ResultSet answer = null;
                         PreparedStatement toAdd = null;
-                        String baseAdd = "insert into Reservation values (?,?,?,TO_DATE(?, 'YYYY-MM-DD'),?,?,?)";
+                        String baseAdd = "insert into Reservation values (?,?,?,TO_DATE(?, 'YYYY-MM-DD'),?,?,?,?)";
                         toAdd = dbconn.prepareStatement(baseAdd);
 
                         try (BufferedReader stream = new BufferedReader(new FileReader("Reservation.csv"))) {
@@ -207,6 +211,7 @@ public class inputData {
                                         toAdd.setString(5,splitRow[4]);
                                         toAdd.setString(6,splitRow[5]);;
                                         myInt(toAdd,7,splitRow[6]);
+                                        myInt(toAdd,8,splitRow[7]);
 
                                         toAdd.addBatch();
                                 }
