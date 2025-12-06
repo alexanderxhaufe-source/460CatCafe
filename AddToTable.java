@@ -1,4 +1,3 @@
-
 public class TestFunctions {
 	
 	/* ------------------------------------------------------------------------
@@ -49,7 +48,7 @@ public class TestFunctions {
 	 *  statement, or would have to give all vars unique names; I chose the 
 	 *  latter option :/
 	 *-----------------------------------------------------------------------*/
-	String addToTable(int tableValue) {
+	public static String addToTable(int tableValue) {
 		String query = "";
 		switch (tableValue) {
 		case 1:
