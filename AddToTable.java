@@ -92,8 +92,11 @@ public class AddToTable {
 			// add EventBooking
 			String bookingID="", custID1="", bookDate="", eventID="", 
 				attendanceStatus="", paymentStatus="";
-			query = "INSERT INTO EventBooking (column1, column2, column_n) "
-					+ "VALUES (value1, value2, value_n);";
+			query = "INSERT INTO EventBooking (bookingID, custID, bookDate, "
+					+ "eventID, attendanceStatus, paymentStatus) "
+					+ "VALUES (" + bookingID + ", " + custID1 + ", " + bookDate 
+					+ ", " + eventID + ", " + attendanceStatus + ", " 
+					+ paymentStatus + ");";
 			//System.out.println("Successfully added new EventBooking to datatable");
 		break;
 		
