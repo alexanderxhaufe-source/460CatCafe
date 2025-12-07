@@ -132,6 +132,8 @@ public class QueryHold {
                         hasNext = answer.next();
                 }
                 System.out.println();
+                stmt.close();
         }
 }
+
 
