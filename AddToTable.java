@@ -1,272 +1,205 @@
-public class TestFunctions {
-	
-	/* ------------------------------------------------------------------------
-	 * addToTable(int)
+/* Authors: Jessica McManus, Alexander Haufe, Aleksei Weinberg
+ * Course: CSC 460 Database Design
+ * Assignment: Program 4
+ * Instructor/TAs: L. McCann, J. Shenn, U. Upadhyay
+ * Due: 12/8/2025
+ * Description: This program acts as a front end for a database containing
+ * information about a cat cafe. It is meant to do queries and allow
+ * for manipulation of the database.
+ * Requirements: Java 16, Oracle JDBC driver, Oracle DBMS access
+*/
+import java.io.*;
+import java.sql.*;
+import java.util.*;
+import java.lang.Math;
+import java.time.LocalDate;
+
+public class AddToTable {
+
+	/*
+	 * ------------------------------------------------------------------------
+	 * addToTable(int, Scanner)
 	 * Requires the DB to already contain the tables listed in Parameters, each
-	 *    with the proper attributes in their given order. THIS WILL NOT WORK 
-	 *    OTHERWISE.
-	 *    
+	 * with the proper attributes in their given order. THIS WILL NOT WORK
+	 * OTHERWISE.
+	 * 
 	 * Parameters: tableValue - an int that represents one of the many tables
-	 *    for our program! Here are the values:
-	 *         1. Adoption
-	 *         2. Employee
-	 *         3. Event
-	 *         4. EventBooking
-	 *         5. HealthRecord
-	 *         6. Member
-	 *         7. MenuItem
-	 *         8. Pet
-	 *         9. Reservation
-	 *         10. Room
-	 *         11. TotalOrder
-	 *         Else: nothing! why would you try to put in something else?
-	 *         
+	 * for our program! Here are the values:
+	 * 1. Adoption
+	 * 2. EventBooking
+	 * 3. HealthRecord
+	 * 4. Member
+	 * 5. Pet
+	 * 6. Reservation
+	 * 7. TotalOrder
+	 * Else: nothing! why would you try to put in something else?
+	 * 
 	 * Returns: A String query that holds a ready SQL query. This query will
-	 *    specifically be for inserting an item into a specific table. If an
-	 *    invalid int is given as the tableValue, query will be an empty String
-	 *    
-	 * Purpose: This function is meant to act as a hub for all insert 
-	 *    statements in the program! It works with switch statements, each int 
-	 *    representing a different Table in our DB (see above, in Parameters). 
-	 *    Once a query is crafted, it gets returned so that the query can be 
-	 *    sent to Oracle.
+	 * specifically be for inserting an item into a specific table. If an
+	 * invalid int is given as the tableValue, query will be an empty String
+	 * 
+	 * Purpose: This function is meant to act as a hub for all insert
+	 * statements in the program! It works with switch statements, each int
+	 * representing a different Table in our DB (see above, in Parameters).
+	 * Once a query is crafted, it gets returned so that the query can be
+	 * sent to Oracle.
 	 * 
 	 * 
 	 * THIS FUNCTION IS NOT COMPLETE
 	 * Currently, it is set up where all of the inputs stay as empty strings
 	 * Input options will have to be added, either as an extension of the
-	 * 	switch statement, or as an entirely new function ( addMember(), for
-	 *  example)
-	 *  
+	 * switch statement, or as an entirely new function ( addMember(), for
+	 * example)
+	 * 
 	 * A print statement has been added and commented-out at the end of each
-	 *  statement just for testing. It does not guarentee the actual adding of
-	 *  an object to a table.
-	 *  
-	 * Some of the variables have names that end in numbers. Due to the way 
-	 *  switch statements work (special fellas, aren't they?), I either would
-	 *  have to declare all of the variables before entering the switch 
-	 *  statement, or would have to give all vars unique names; I chose the 
-	 *  latter option :/
-	 *-----------------------------------------------------------------------*/
+	 * statement just for testing. It does not guarentee the actual adding of
+	 * an object to a table.
+	 * 
+	 * Some of the variables have names that end in numbers. Due to the way
+	 * switch statements work (special fellas, aren't they?), I either would
+	 * have to declare all of the variables before entering the switch
+	 * statement, or would have to give all vars unique names; I chose the
+	 * latter option :/
+	 * -----------------------------------------------------------------------
+	 */
 	
-	/* Method: inputNumber
-	 * Purpose: To get a valid integer input from the user
-	 * Parameters: Scanner scanner - the scanner to read user input
-	 *             String prompt - the prompt to display to the user
-	 * Returns: A String representation of the integer input by the user
-	*/
-	private static String inputNumber(Scanner scanner, String prompt) {
-		int number = 0;
-		while (true) {
-			try {
-				System.out.print(prompt);
-				number = scanner.nextInt();
-				break;
-			} catch (InputMismatchException e) {
-				System.out.println("Invalid: Must be a 4 digit number\n");
-				scanner.next();
-			}
-		}
-		return Integer.toString(number);
-	}
-
-	/* Method: inputString
-	 * Purpose: To get a valid string input from the user
-	 * Parameters: Scanner scanner - the scanner to read user input
-	 *             String prompt - the prompt to display to the user
-	 * Returns: A String input by the user
-	*/
-	private static String inputString(Scanner scanner, String prompt) {
-		String input = "";
-		while (true) {
-			try {
-				System.out.print(prompt);
-				input = scanner.nextLine();
-				break;
-			} catch (InputMismatchException e) {
-				System.out.println("Invalid: Must be a string\n");
-				scanner.next();
-			}
-		}
-		return input;
-	}
-
-	/* Method: inputPrice
-	 * Purpose: To get a valid price input from the user
-	 * Parameters: Scanner scanner - the scanner to read user input
-	 *             String prompt - the prompt to display to the user
-	 * Returns: A String representation of the price input by the user
-	*/
-	private static String inputPrice(Scanner scanner, String prompt) {
-		double price = 0.0;
-		while (true) {
-			try {
-				System.out.print(prompt);
-				price = scanner.nextDouble();
-				// check if precicely two decimal places
-				if (Math.round(price * 100) != price * 100) {
-					System.out.println("Invalid: Must be a valid price\n");
-					continue;
-				}
-				break;
-			} catch (InputMismatchException e) {
-				System.out.println("Invalid: Must be a valid price\n");
-				scanner.next();
-			}
-		}
-		return Double.toString(price);
-	}
-
 	public static String addToTable(int tableValue, Scanner scanner) {
 		String query = "";
 		switch (tableValue) {
-		case 1:
-			// add Adoption
-			String appID="", custID="", petID="", empID="", appDate="", 
-				status="", price="";
-			appID = inputNumber(scanner, "Enter appID: ");
-			custID = inputNumber(scanner, "Enter custID: ");
-			petID = inputNumber(scanner, "Enter petID: ");
-			empID = inputNumber(scanner, "Enter empID: ");
-			appDate = inputString(scanner, "Enter appDate (YYYY-MM-DD): ");
-			status = inputString(scanner, "Enter status: ");
-			price = inputPrice(scanner, "Enter price: ");
-			query = "INSERT INTO Adoption (appID, custID, petID, empID, appDate"
-					+ ", status, price) "
-					+ "VALUES (" + appID + ", " + custID + ", " + petID + ", " 
-					+ empID + ", " + appDate + ", " + status + ", " + price 
-					+ ");";
-			// from here we need to send this sql statement somewhere to be executed
-			//System.out.println("Successfully added new Adoption to datatable");
-		break;
-		
-		case 2:
-			// add Employee
-			String empID1="", firstName="", lastName="", position="";
-			query = "INSERT INTO Employee (empID, firstName, lastName, position"
-					+ ") "
-					+ "VALUES (" + empID1 + ", " + firstName + ", " + lastName 
-					+ ", " + position + ");";
-			//System.out.println("Successfully added new Employee to datatable");
-		break;
-		
-		case 3:
-			// add Event
-			String eventId="", eventName="", description="", roomID="", 
-				empID2="", maxCapacity="", eventDate="", time="", 
-				attendanceFee="", regCust="";
-			query = "INSERT INTO Event (eventId, eventName, description, roomID"
-					+ ", empID, maxCapacity, eventDate, time, attendanceFee, "
-					+ "regCust) "
-					+ "VALUES (" + eventId + ", " + eventName + ", " + 
-					description + ", " + roomID + ", " + empID2 + ", " + 
-					maxCapacity + ", " + eventDate + ", " + time + ", " + 
-					attendanceFee + ", " + regCust + ");";
-			//System.out.println("Successfully added new Event to datatable");
-		break;
-		
-		case 4:
-			// add EventBooking
-			String bookingID="", custID1="", bookDate="", eventID="", 
-				attendanceStatus="", paymentStatus="", membershipTier="";
-			query = "INSERT INTO EventBooking (bookingID, custID, bookDate, "
-					+ "eventID, attendanceStatus, paymentStatus, membershipTier) "
-					+ "VALUES (" + bookingID + ", " + custID1 + ", " + bookDate 
-					+ ", " + eventID + ", " + attendanceStatus + ", " 
-					+ paymentStatus + ", " + membershipTier + ");";
-			//System.out.println("Successfully added new EventBooking to datatable");
-		break;
-		
-		case 5:
-			// add HealthRecord
-			String recordID="", petID1="", employeeID="", recordDate="", 
-				recordType="", description1="", nextDueDate="";
-			query = "INSERT INTO HealthRecord (recordID, petID, employeeID, "
-					+ "recordDate, recordType, description, nextDueDate) "
-					+ "VALUES (" + recordID + ", " + petID1 + ", " + employeeID 
-					+ ", " + recordDate + ", " + recordType + ", " + 
-					description1 + ", " + nextDueDate + ");";
-			//System.out.println("Successfully added new HealthRecord to datatable");
-		break;
-		
-		case 6:
-			// add Member
-			String memberID="", lastName1="", firstName1="", DoB="", email="", 
-				membershipTier1="", emergencyContactAreaCode="", 
-				emergencyContact="", phoneNoAreaCode="", phoneNo="";
-			query = "INSERT INTO Member (memberID, lastName, firstName, DoB, "
-					+ "email, membershipTier," + " emergencyContactAreaCode, "
-					+ "emergencyContact, phoneNoAreaCode, phoneNo) "
-					+ "VALUES (" + memberID + ", " + lastName1 + ", " + 
-					firstName1 + ", " + DoB + ", " + email + ", " + 
-					membershipTier1 + ", " + emergencyContactAreaCode + ", " + 
-					emergencyContact + ", " + phoneNoAreaCode + ", " + phoneNo 
-					+ ");";
-			//System.out.println("Successfully added new Member to datatable");
-		break;
-		
-		case 7:
-			// add MenuItem
-			String menuID="", orderID="", name="", price1="";
-			query = "INSERT INTO MenuItem (menuID, orderID, name, price) "
-					+ "VALUES (" + menuID + ", " + orderID + ", " + name + ", "
-					+ price1 +");";
-			//System.out.println("Successfully added new MenuItem to datatable");
-		break;
-		
-		case 8:
-			// add Pet
-			String petID2="", name1="", species="", breed="", age="", 
-				arrivalDate="", temperament="", spNeeds="", currStat="";
-			query = "INSERT INTO Pet (petID, name, species, breed, age, "
-					+ "arrivalDate, temperament, spNeeds, currStat) "
-					+ "VALUES (" + petID2 + ", " + name1 + ", " + species + ", " 
-					+ breed + ", " + age + ", " + arrivalDate + ", " 
-					+ temperament + ", " + spNeeds + ", " + currStat + ");";
-			//System.out.println("Successfully added new Pet to datatable");
-		break;
-		
-		case 9:
-			// add Reservation
-			String reservationID="", customerID="", roomID1="", resDate="", 
-				startTime="", duration="", inStatus="", membershipTier2="";
-			query = "INSERT INTO Reservation (reservationID, customerID, roomID"
-					+ ", resDate, startTime, duration, inStatus, membershipTier) "
-					+ "VALUES (" + reservationID + ", " + customerID + ", " + 
-					roomID1 + ", " + resDate + ", " + startTime + ", " + 
-					duration + ", " + inStatus + ", " + membershipTier2 + ");";
-			//System.out.println("Successfully added new Reservation to datatable");
-		break;
-		
-		case 10:
-			// add Room
-			String roomID3="", maxCapacity1="", petType="", purpose="";
-			query = "INSERT INTO Room (roomID, maxCapacity, petType, purpose) "
-					+ "VALUES (" + roomID3 + ", " + maxCapacity1 + ", " + petType
-					+ ", " + purpose + ");";
-			//System.out.println("Successfully added new Room to datatable");
-		break;
-		
-		case 11:
-			// add TotalOrder
-			String orderID1="", memberID1="", reservationID1="", orderTime="", 
-				totalPrice="", paymentStatus1="", orderDate="";
-			query = "INSERT INTO TotalOrder (orderID, memberID, reservationID,"
-					+ " orderTime, totalPrice, paymentStatus, orderDate) "
-					+ "VALUES (" + orderID1 + ", " + memberID1 + ", " + 
-					reservationID1 + ", " + orderTime + ", " + totalPrice + ", "
-					+ paymentStatus1 + ", " + orderDate + ");";
-			//System.out.println("Successfully added new TotalOrder to datatable");
-		break;
-		
-		default:
-			// invalid number is given, do nothing? not really sure where we
-			//   want to go with this one.. for now, query will be "".
-			System.out.println("Invalid Value in addToTable()");
-		break;
-		}
-		
-		return query;
-	}	// addToTable();
+			case 1:
+				// add Adoption
+				String appID = "", custID = "", petID = "", empID = "", appDate = "",
+						status = "", price = "";
+				appID = Common.inputNumber(scanner, "Enter appID: ");
+				custID = Common.inputNumber(scanner, "Enter custID: ");
+				petID = Common.inputNumber(scanner, "Enter petID: ");
+				empID = Common.inputNumber(scanner, "Enter empID: ");
+				appDate = Common.inputString(scanner, "Enter application date (YYYY-MM-DD): ");
+				appDate = "TO_DATE(" + "\'" + appDate + "\'" + ", \'YYYY-MM-DD\')";
+				int statusOption = 0;
+				while (true) {
+					System.out.println("Select status:");
+					System.out.println("1. pending");
+					System.out.println("2. approved");
+					System.out.println("3. rejected");
+					System.out.println("4. withdrawn");
+					System.out.print("Enter status number: ");
+					try {
+						statusOption = scanner.nextInt();
+					} catch (InputMismatchException e) {
+						System.out.println("Invalid: Must be a number\n");
+						scanner.next(); // move scanner past invalid input
+						continue;
+					}
+					if (statusOption < 1 || statusOption > 4) {
+						System.out.println("Invalid: Must be between 1 and 4\n");
+						continue;
+					}
+					switch (statusOption) {
+						case 1:
+							status = "pending";
+							break;
+						case 2:
+							status = "approved";
+							break;
+						case 3:
+							status = "rejected";
+							break;
+						case 4:
+							status = "withdrawn";
+							break;
+					}
+					break;
+				}
+				price = Common.inputPrice(scanner, "Enter price: ");
+				query = "INSERT INTO Adoption (appID, custID, petID, empID, appDate"
+						+ ", status, price) "
+						+ "VALUES (" + appID + ", " + custID + ", " + petID + ", "
+						+ empID + ", " + appDate + ", " + status + ", " + price
+						+ ");";
+				// System.out.println("Successfully added new Adoption to datatable");
+				break;
 
+			case 2:
+				// add EventBooking
+				String bookingID = "", custID1 = "", bookDate = "", eventID = "",
+						attendanceStatus = "", paymentStatus = "", membershipTier = "";
+				query = "INSERT INTO EventBooking (bookingID, custID, bookDate, "
+						+ "eventID, attendanceStatus, paymentStatus, membershipTier) "
+						+ "VALUES (" + bookingID + ", " + custID1 + ", " + bookDate
+						+ ", " + eventID + ", " + attendanceStatus + ", "
+						+ paymentStatus + ", " + membershipTier + ");";
+				// System.out.println("Successfully added new EventBooking to datatable");
+				break;
+
+			case 3:
+				// add HealthRecord
+				String recordID = "", petID1 = "", employeeID = "", recordDate = "",
+						recordType = "", description1 = "", nextDueDate = "";
+				query = "INSERT INTO HealthRecord (recordID, petID, employeeID, "
+						+ "recordDate, recordType, description, nextDueDate) "
+						+ "VALUES (" + recordID + ", " + petID1 + ", " + employeeID
+						+ ", " + recordDate + ", " + recordType + ", " +
+						description1 + ", " + nextDueDate + ");";
+				// System.out.println("Successfully added new HealthRecord to datatable");
+				break;
+
+			case 4:
+				// add Member
+				String memberID = "", lastName1 = "", firstName1 = "", DoB = "", email = "",
+						membershipTier1 = "", emergencyContactAreaCode = "",
+						emergencyContact = "", phoneNoAreaCode = "", phoneNo = "";
+				query = "INSERT INTO Member (memberID, lastName, firstName, DoB, "
+						+ "email, membershipTier," + " emergencyContactAreaCode, "
+						+ "emergencyContact, phoneNoAreaCode, phoneNo) "
+						+ "VALUES (" + memberID + ", " + lastName1 + ", " +
+						firstName1 + ", " + DoB + ", " + email + ", " +
+						membershipTier1 + ", " + emergencyContactAreaCode + ", " +
+						emergencyContact + ", " + phoneNoAreaCode + ", " + phoneNo
+						+ ");";
+				// System.out.println("Successfully added new Member to datatable");
+				break;
+
+			case 5:
+				// add Pet
+				String petID2 = "", name1 = "", species = "", breed = "", age = "",
+						arrivalDate = "", temperament = "", spNeeds = "", currStat = "";
+				query = "INSERT INTO Pet (petID, name, species, breed, age, "
+						+ "arrivalDate, temperament, spNeeds, currStat) "
+						+ "VALUES (" + petID2 + ", " + name1 + ", " + species + ", "
+						+ breed + ", " + age + ", " + arrivalDate + ", "
+						+ temperament + ", " + spNeeds + ", " + currStat + ");";
+				// System.out.println("Successfully added new Pet to datatable");
+				break;
+
+			case 6:
+				// add Reservation
+				String reservationID = "", customerID = "", roomID1 = "", resDate = "",
+						startTime = "", duration = "", inStatus = "", membershipTier2 = "";
+				query = "INSERT INTO Reservation (reservationID, customerID, roomID"
+						+ ", resDate, startTime, duration, inStatus, membershipTier) "
+						+ "VALUES (" + reservationID + ", " + customerID + ", " +
+						roomID1 + ", " + resDate + ", " + startTime + ", " +
+						duration + ", " + inStatus + ", " + membershipTier2 + ");";
+				// System.out.println("Successfully added new Reservation to datatable");
+				break;
+
+			case 7:
+				// add TotalOrder
+				String orderID1 = "", memberID1 = "", reservationID1 = "", orderTime = "",
+						totalPrice = "", paymentStatus1 = "", orderDate = "";
+				query = "INSERT INTO TotalOrder (orderID, memberID, reservationID,"
+						+ " orderTime, totalPrice, paymentStatus, orderDate) "
+						+ "VALUES (" + orderID1 + ", " + memberID1 + ", " +
+						reservationID1 + ", " + orderTime + ", " + totalPrice + ", "
+						+ paymentStatus1 + ", " + orderDate + ");";
+				// System.out.println("Successfully added new TotalOrder to datatable");
+				break;
+
+			default:
+				System.out.println("Invalid Value in addToTable()");
+				break;
+		}
+		return query;
+	} // addToTable();
 }

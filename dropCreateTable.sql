@@ -120,5 +120,6 @@ CREATE TABLE Adoption (
         status varChar2(20),
         price number(6,2),
         primary key (appID)
+        constraint chk_status check (status in ('pending', 'approved', 'rejected', 'withdrawn', 'recieved')
 );
 

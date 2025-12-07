@@ -1,7 +1,8 @@
+/* added some FK constraints here, im not sure if they work or not so i left dropCreateTable unchanged*/
 CREATE TABLE TotalOrder (
         orderID number(4),
-        memberID number(4),
-        reservationID number(4),
+        memberID number(4) references Member(memberID),
+        reservationID number(4) references Reservation(reservationID),
         orderTime varChar2(8),
         totalPrice number(6,2),
         paymentStatus number(1),
@@ -10,7 +11,7 @@ CREATE TABLE TotalOrder (
 );
 CREATE TABLE MenuItem (
         menuID number(4),
-        orderID number(4),
+        orderID number(4) references TotalOrder(orderID),
         name varChar2(30),
         price number(6,2),
         primary key (menuID)
@@ -30,9 +31,9 @@ CREATE TABLE Member (
 );
 CREATE TABLE EventBooking (
         bookingID number(4),
-        custID number(4),
+        custID number(4) references Member(memberID),
         bookDate date,
-        eventID number(4),
+        eventID number(4) references Event(eventID),
         attendanceStatus number(1),
         paymentStatus number(1),
         membershipTier number(1),
@@ -40,8 +41,8 @@ CREATE TABLE EventBooking (
 );
 CREATE TABLE Reservation (
         reservationID number(4),
-        customerID number(4),
-        roomID number(4),
+        customerID number(4) references Member(memberID),
+        roomID number(4) references Room(roomID),
         resDate date,
         startTime varChar2(8),
         duration varChar2(5),
@@ -61,8 +62,8 @@ CREATE TABLE Event (
         eventID number(4),
         eventName varChar2(20),
         description varChar2(120),
-        roomID number(4),
-        empID number(4),
+        roomID number(4) references Room(roomID),
+        empID number(4) references Employee(empID),
         maxCapacity number(3),
         eventDate date,
         time varChar2(8),
@@ -79,8 +80,8 @@ CREATE TABLE Employee (
 );
 CREATE TABLE HealthRecord (
         recordID number(4),
-        petID number(4),
-        employeeID number(4),
+        petID number(4) references Pet(petID),
+        employeeID number(4) references Employee(empID),
         recordDate date,
         recordType varChar2(20),
         description varChar2(120),
@@ -101,11 +102,12 @@ CREATE TABLE Pet (
 );
 CREATE TABLE Adoption (
         appID number(4),
-        custID number(4),
-        petID number(4),
-        empID number(4),
+        custID number(4) references Member(memberID),
+        petID number(4) references Pet(petID),
+        empID number(4) references Employee(empID),
         appDate date,
         status varChar2(20),
         price number(6,2),
         primary key (appID)
+        constraint chk_status check (status in ('pending', 'approved', 'rejected', 'withdrawn', 'recieved')
 );
