@@ -101,12 +101,12 @@ public class QueryHold {
                 System.out.println();
                 stmt.close();
         }
-        public static void query4(Connection dbcon, Scanner stream) throws SQLException {
+        public static void query4(Connection dbconn, Scanner stream) throws SQLException {
                 System.out.println("Enter the employee's first name");
                 String empFName = stream.nextLine();
                 System.out.println("Enter the employee's last name");
                 String empLName = stream.nextLine();
-                query =
+                String query =
                         "select Pet.name,Pet.species,Pet.breed "+
                         "from Pet,Employee,Adoption "+
                         "where Employee.firstName = '"+empFName+
@@ -115,8 +115,8 @@ public class QueryHold {
                                 " and Adoption.status = 'pending'"+
                                 " and Adoption.petID = Pet.petID";
 
-                stmt = dbconn.createStatement();
-                answer = stmt.executeQuery(query);
+                Statement stmt = dbconn.createStatement();
+                ResultSet answer = stmt.executeQuery(query);
                                                 
                 boolean hasNext = answer.next();
                 if (!hasNext){
@@ -135,5 +135,6 @@ public class QueryHold {
                 stmt.close();
         }
 }
+
 
 
