@@ -234,7 +234,7 @@ public class inputData {
                         Statement stmt = null;
                         ResultSet answer = null;
                         PreparedStatement toAdd = null;
-                        String baseAdd = "insert into Room values (?,?,?,?)";
+                        String baseAdd = "insert into Room values (?,?,?,?,?)";
                         toAdd = dbconn.prepareStatement(baseAdd);
 
                         try (BufferedReader stream = new BufferedReader(new FileReader("Room.csv"))) {
@@ -245,6 +245,8 @@ public class inputData {
                                         myInt(toAdd,2,splitRow[1]);
                                         toAdd.setString(3,splitRow[2]);
                                         toAdd.setString(4,splitRow[3]);
+                                        toAdd.setString(5,splitRow[4]);
+
 
                                         toAdd.addBatch();
                                 }
