@@ -3,7 +3,57 @@ import java.sql.*;
 import java.util.Scanner;
 import java.lang.Math;
 import java.time.LocalDate;
+
 public class QueryHold {
+        
+        // method for query 1
+        private static void QueryOne(Connection dbconn, String pet_name) {
+        System.out.println();
+        String query = 
+                        "select a.appID \"Application ID\", m.firstName || \' \' || m.lastName \"Applicant Name\", " +
+                        "a.appDate \"Date\", a.status \"Status\", e.firstName || \' \' || e.lastName \"Adoption Coordinator\" " +
+                        "from alexanderxhaufe.Member m, alexanderxhaufe.Adoption a, alexanderxhaufe.Employee e, alexanderxhaufe.Pet p " +
+                        "where a.petID = p.petID " +
+                        "and a.empID = e.empID " +
+                        "and a.custID = m.memberID " +
+                        "and p.name = \'" + pet_name + "\'";
+        Statement stmt = null;
+        ResultSet answer = null;
+        try {
+                stmt = dbconn.createStatement();
+                answer = stmt.executeQuery(query);
+
+                if (answer != null) {
+
+                ResultSetMetaData answermetadata = answer.getMetaData(); // get result set metadata
+
+                // print column headers
+                for (int i = 1; i <= answermetadata.getColumnCount(); i++) {
+                        System.out.print(answermetadata.getColumnName(i) + "\t\t");
+                }
+                System.out.println();
+                // print rows of the result set
+                while (answer.next()) {
+                        int appID = answer.getInt("Application ID");
+                        String applicantName = answer.getString("Applicant Name");
+                        Date appDate = answer.getDate("Date");
+                        String status = answer.getString("Status");
+                        String coordinatorName = answer.getString("Adoption Coordinator");
+                        System.out.println(appID + "\t" + applicantName + "\t" + appDate + "\t" + status + "\t" + coordinatorName);
+                }
+                }
+                System.out.println();
+                stmt.close();
+                } catch (SQLException e) {
+                        System.err.println("*** SQLException:  "
+                                + "Could not fetch query results.");
+                        System.err.println("\tMessage:   " + e.getMessage());
+                        System.err.println("\tSQLState:  " + e.getSQLState());
+                        System.err.println("\tErrorCode: " + e.getErrorCode());
+                        System.exit(-1);
+                }
+        }
+
         public static void main (String[] args) {
                 final String oracleURL = "jdbc:oracle:thin:@aloe.cs.arizona.edu:1521:oracle";
 
@@ -50,6 +100,7 @@ public class QueryHold {
                                 stream.nextLine();
                                 switch(selected) {
                                         case 1:
+                                                QueryOne(dbconn, "mittens");
                                                 break;
                                         case 2:
                                                 break;
