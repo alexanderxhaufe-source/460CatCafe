@@ -48,18 +48,95 @@ public class TestFunctions {
 	 *  statement, or would have to give all vars unique names; I chose the 
 	 *  latter option :/
 	 *-----------------------------------------------------------------------*/
-	public static String addToTable(int tableValue) {
+	
+	/* Method: inputNumber
+	 * Purpose: To get a valid integer input from the user
+	 * Parameters: Scanner scanner - the scanner to read user input
+	 *             String prompt - the prompt to display to the user
+	 * Returns: A String representation of the integer input by the user
+	*/
+	private static String inputNumber(Scanner scanner, String prompt) {
+		int number = 0;
+		while (true) {
+			try {
+				System.out.print(prompt);
+				number = scanner.nextInt();
+				break;
+			} catch (InputMismatchException e) {
+				System.out.println("Invalid: Must be a 4 digit number\n");
+				scanner.next();
+			}
+		}
+		return Integer.toString(number);
+	}
+
+	/* Method: inputString
+	 * Purpose: To get a valid string input from the user
+	 * Parameters: Scanner scanner - the scanner to read user input
+	 *             String prompt - the prompt to display to the user
+	 * Returns: A String input by the user
+	*/
+	private static String inputString(Scanner scanner, String prompt) {
+		String input = "";
+		while (true) {
+			try {
+				System.out.print(prompt);
+				input = scanner.nextLine();
+				break;
+			} catch (InputMismatchException e) {
+				System.out.println("Invalid: Must be a string\n");
+				scanner.next();
+			}
+		}
+		return input;
+	}
+
+	/* Method: inputPrice
+	 * Purpose: To get a valid price input from the user
+	 * Parameters: Scanner scanner - the scanner to read user input
+	 *             String prompt - the prompt to display to the user
+	 * Returns: A String representation of the price input by the user
+	*/
+	private static String inputPrice(Scanner scanner, String prompt) {
+		double price = 0.0;
+		while (true) {
+			try {
+				System.out.print(prompt);
+				price = scanner.nextDouble();
+				// check if precicely two decimal places
+				if (Math.round(price * 100) != price * 100) {
+					System.out.println("Invalid: Must be a valid price\n");
+					continue;
+				}
+				break;
+			} catch (InputMismatchException e) {
+				System.out.println("Invalid: Must be a valid price\n");
+				scanner.next();
+			}
+		}
+		return Double.toString(price);
+	}
+
+	public static String addToTable(int tableValue, Scanner scanner) {
 		String query = "";
 		switch (tableValue) {
 		case 1:
 			// add Adoption
 			String appID="", custID="", petID="", empID="", appDate="", 
 				status="", price="";
+			appID = inputNumber(scanner, "Enter appID: ");
+			custID = inputNumber(scanner, "Enter custID: ");
+			petID = inputNumber(scanner, "Enter petID: ");
+			empID = inputNumber(scanner, "Enter empID: ");
+			appDate = inputString(scanner, "Enter appDate (YYYY-MM-DD): ");
+			status = inputString(scanner, "Enter status: ");
+			price = inputPrice(scanner, "Enter price: ");
 			query = "INSERT INTO Adoption (appID, custID, petID, empID, appDate"
 					+ ", status, price) "
 					+ "VALUES (" + appID + ", " + custID + ", " + petID + ", " 
 					+ empID + ", " + appDate + ", " + status + ", " + price 
 					+ ");";
+			// from here we need to send this sql statement somewhere to be executed
 			//System.out.println("Successfully added new Adoption to datatable");
 		break;
 		
