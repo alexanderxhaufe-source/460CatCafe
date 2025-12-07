@@ -54,6 +54,7 @@ CREATE TABLE Room (
         maxCapacity number(3),
         petType varChar2(20),
         purpose varChar2(20),
+        location varChar2(120),
         primary key (roomID)
 );
 CREATE TABLE Event (
