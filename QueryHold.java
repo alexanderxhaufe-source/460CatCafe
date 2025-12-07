@@ -101,4 +101,37 @@ public class QueryHold {
                 System.out.println();
                 stmt.close();
         }
+        public static void query4(Connection dbcon, Scanner stream) throws SQLException {
+                System.out.println("Enter the employee's first name");
+                String empFName = stream.nextLine();
+                System.out.println("Enter the employee's last name");
+                String empLName = stream.nextLine();
+                query =
+                        "select Pet.name,Pet.species,Pet.breed "+
+                        "from Pet,Employee,Adoption "+
+                        "where Employee.firstName = '"+empFName+
+                                "' and Employee.lastName = '"+empLName+
+                                "' and Employee.empID = Adoption.empID"+
+                                " and Adoption.status = 'pending'"+
+                                " and Adoption.petID = Pet.petID";
+
+                stmt = dbconn.createStatement();
+                answer = stmt.executeQuery(query);
+                                                
+                boolean hasNext = answer.next();
+                if (!hasNext){
+                        System.out.println("The employee "+empFName+" "+empLName+" has no pending pet applications.\n");
+                        return;
+                }
+
+                System.out.println("The following pets have a pending application assigned to "+empFName+" "+empLName);
+                while (hasNext){
+                        System.out.println("Pet's Name: "+answer.getString("name")
+                                                +" | species: "+answer.getString("species")
+                                                +" | breed: "+answer.getString("breed"));
+                        hasNext = answer.next();
+                }
+                System.out.println();
+        }
 }
+
