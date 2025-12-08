@@ -1,4 +1,5 @@
 
+
 /* Authors: Jessica McManus, Alexander Haufe, Aleksei Weinberg
  * Course: CSC 460 Database Design
  * Assignment: Program 4
@@ -26,7 +27,18 @@ public class AddToTable {
 	private static String addToAdoption(Scanner scanner) {
 		String appID = "", custID = "", petID = "", empID = "", appDate = "",
 				status = "", price = "";
-		appID = Common.inputNumber(scanner, "Enter appID: ");
+		//appID = Prog4.runQuery("SELECT MAX(appID) AS lastID FROM alexanderxhaufe.Adoption");
+		ArrayList<ResultSet> appIDs = Prog4.runQuery("SELECT MAX(appID) AS lastID FROM alexanderxhaufe.Adoption");
+		try {
+			appID = "" + (Integer.parseInt(appIDs.get(0).getString("appID")) +1);
+		} catch (NumberFormatException e) {
+			System.out.println("Error: that wasn't a number!\n");
+			e.printStackTrace();
+		} catch (SQLException e) {
+			System.out.println("Error with retrieving max appID\n");
+			e.printStackTrace();
+		}
+		//appID = Common.inputNumber(scanner, "Enter appID: ");
 		custID = Common.inputNumber(scanner, "Enter custID: ");
 		petID = Common.inputNumber(scanner, "Enter petID: ");
 		empID = Common.inputNumber(scanner, "Enter empID: ");
@@ -86,16 +98,28 @@ public class AddToTable {
 	 * Purpose: using a scanner object, creates an SQL query to add an 
 	 *    EventBooking object through user input. 
 	 */
-	private static String addToEventBookinng(Scanner scanner) {
+	private static String addToEventBooking(Scanner scanner) {
 		String bookingID = "", custID = "", bookDate = "", eventID = "",
 				attendanceStatus = "", paymentStatus = "", membershipTier = "";
-		bookingID = Common.inputNumber(scanner, "Enter bookingID: ");
+		ArrayList<ResultSet> bookingIDs = Prog4.runQuery("SELECT MAX(bookingID) AS lastID FROM alexanderxhaufe.EventBooking");
+		try {
+			bookingID = "" + (Integer.parseInt(bookingIDs.get(0).getString("bookingID")) +1);
+		} catch (NumberFormatException e) {
+			System.out.println("Error: that wasn't a number!\n");
+			e.printStackTrace();
+		} catch (SQLException e) {
+			System.out.println("Error with retrieving max bookingID\n");
+			e.printStackTrace();
+		}
+		//bookingID = Prog4.runQuery("SELECT MAX(bookingID) AS lastID FROM alexanderxhaufe.EventBooking");
+		bookingID = "" + (Integer.parseInt(bookingID) +1);
+		//bookingID = Common.inputNumber(scanner, "Enter bookingID: ");
 		custID = Common.inputNumber(scanner, "Enter custID: ");
 		bookDate = Common.inputString(scanner, "Enter bookDate (YYYY-MM-DD): ");
 		eventID = Common.inputNumber(scanner, "Enter eventID: ");
 		attendanceStatus = Common.inputNumber(scanner, "Enter attendancee status (0/1): ");
 		paymentStatus = Common.inputNumber(scanner, "Enter payment status (0/1): ");
-		membershipTier = Common.inputString(scanner, "Enter membership tier: ");
+		membershipTier = Common.inputNumber(scanner, "Enter membership tier (0,1,2): ");
 		
 		bookDate = "TO_DATE(" + "\'" + bookDate + "\'" + ", \'YYYY-MM-DD\')";
 		
@@ -119,7 +143,19 @@ public class AddToTable {
 	private static String addToHealthRecord(Scanner scanner) {
 		String recordID = "", petID = "", employeeID = "", recordDate = "",
 				recordType = "", description = "", nextDueDate = "";
-		recordID = Common.inputNumber(scanner, "Enter recordID: ");
+		ArrayList<ResultSet> recordIDs = Prog4.runQuery("SELECT MAX(recordID) AS lastID FROM alexanderxhaufe.HealthRecord");
+		try {
+			recordID = "" + (Integer.parseInt(recordIDs.get(0).getString("recordID")) +1);
+		} catch (NumberFormatException e) {
+			System.out.println("Error: that wasn't a number!\n");
+			e.printStackTrace();
+		} catch (SQLException e) {
+			System.out.println("Error with retrieving max recordID\n");
+			e.printStackTrace();
+		}
+		//recordID = Prog4.runQuery("SELECT MAX(recordID) AS lastID FROM alexanderxhaufe.HealthRecord");
+		recordID = "" + (Integer.parseInt(recordID) +1);
+		//recordID = Common.inputNumber(scanner, "Enter recordID: ");
 		petID = Common.inputNumber(scanner, "Enter petID: ");
 		employeeID = Common.inputNumber(scanner, "Enter employeeID: ");
 		recordDate = Common.inputString(scanner, "Enter recordDate (YYYY-MM-DD): ");
@@ -151,16 +187,28 @@ public class AddToTable {
 		String memberID = "", lastName = "", firstName = "", DoB = "", email = "",
 				membershipTier = "", emergencyContactAreaCode = "",
 				emergencyContact = "", phoneNoAreaCode = "", phoneNo = "";
-		memberID = Common.inputNumber(scanner, "Enter memberID: ");
+		ArrayList<ResultSet> memIDs = Prog4.runQuery("SELECT MAX(memberID) AS lastID FROM alexanderxhaufe.Member");
+		try {
+			memberID = "" + (Integer.parseInt(memIDs.get(0).getString("memberID")) +1);
+		} catch (NumberFormatException e) {
+			System.out.println("Error: that wasn't a number!\n");
+			e.printStackTrace();
+		} catch (SQLException e) {
+			System.out.println("Error with retrieving max memberID\n");
+			e.printStackTrace();
+		}
+		//memberID = Prog4.runQuery("SELECT MAX(memberID) AS lastID FROM alexanderxhaufe.Member");
+		memberID = "" + (Integer.parseInt(memberID) +1);
+		//memberID = Common.inputNumber(scanner, "Enter memberID: ");
 		lastName = Common.inputString(scanner, "Enter last name: ");
 		firstName = Common.inputString(scanner, "Enter first name: ");
 		DoB = Common.inputString(scanner, "Enter date of birth (YYYY-MM-DD): ");
 		email = Common.inputString(scanner, "Enter email: ");
-		membershipTier = Common.inputString(scanner, "Enter membership tier: ");
+		membershipTier = Common.inputNumber(scanner, "Enter membership tier (0,1,2): ");
 		emergencyContactAreaCode = Common.inputNumber(scanner, "Enter emergency contact area code (xxx): ");
-		emergencyContact = Common.inputString(scanner, "Enter emergency contact number (xxx-xxxx): ");
+		emergencyContact = Common.inputNumber(scanner, "Enter emergency contact number (xxxxxxx): ");
 		phoneNoAreaCode = Common.inputNumber(scanner, "Enter phone# area code (xxx): ");
-		phoneNo = Common.inputString(scanner, "Enter phone number (xxx-xxxx): ");
+		phoneNo = Common.inputNumber(scanner, "Enter phone number (xxxxxxx): ");
 		
 		DoB = "TO_DATE(" + "\'" + DoB + "\'" + ", \'YYYY-MM-DD\')";
 		
@@ -187,7 +235,19 @@ public class AddToTable {
 	private static String addToPet(Scanner scanner) {
 		String petID = "", name = "", species = "", breed = "", age = "",
 				arrivalDate = "", temperament = "", spNeeds = "", currStat = "";
-		petID = Common.inputNumber(scanner, "Enter petID: ");
+		ArrayList<ResultSet> petIDs = Prog4.runQuery("SELECT MAX(petID) AS lastID FROM alexanderxhaufe.Pet");
+		try {
+			petID = "" + (Integer.parseInt(petIDs.get(0).getString("petID")) +1);
+		} catch (NumberFormatException e) {
+			System.out.println("Error: that wasn't a number!\n");
+			e.printStackTrace();
+		} catch (SQLException e) {
+			System.out.println("Error with retrieving max petID\n");
+			e.printStackTrace();
+		}
+		//petID = Prog4.runQuery("SELECT MAX(petID) AS lastID FROM alexanderxhaufe.Pet");
+		petID = "" + (Integer.parseInt(petID) +1);
+		//petID = Common.inputNumber(scanner, "Enter petID: ");
 		name = Common.inputString(scanner, "Enter pet name: ");
 		species = Common.inputString(scanner, "Enter species: ");
 		breed = Common.inputString(scanner, "Enter breed: ");
@@ -195,7 +255,7 @@ public class AddToTable {
 		arrivalDate = Common.inputString(scanner, "Enter pet arrival date ('YYYY-MM-DD'): ");
 		temperament = Common.inputString(scanner, "Enter pet temperament: ");
 		spNeeds = Common.inputString(scanner, "Enter special needs (y/n): ");
-		currStat = Common.inputNumber(scanner, "Enter pet status: ");
+		currStat = Common.inputString(scanner, "Enter pet status: ");
 		
 		arrivalDate = "TO_DATE(" + "\'" + arrivalDate + "\'" + ", \'YYYY-MM-DD\')";
 		
@@ -219,17 +279,28 @@ public class AddToTable {
 	private static String addToReservation(Scanner scanner) {
 		String reservationID = "", customerID = "", roomID = "", resDate = "",
 				startTime = "", duration = "", inStatus = "", membershipTier = "";
-		reservationID = Common.inputNumber(scanner, "Enter reservationID: ");
+		
+		ArrayList<ResultSet> resIDs = Prog4.runQuery("SELECT MAX(reservationID) AS lastID FROM alexanderxhaufe.Reservation");
+		try {
+			reservationID = "" + (Integer.parseInt(resIDs.get(0).getString("reservationID")) +1);
+		} catch (NumberFormatException e) {
+			System.out.println("Error: that wasn't a number!\n");
+			e.printStackTrace();
+		} catch (SQLException e) {
+			System.out.println("Error with retrieving max reservationID\n");
+			e.printStackTrace();
+		}
+		//reservationID = Common.inputNumber(scanner, "Enter reservationID: ");
+		reservationID = "" + (Integer.parseInt(reservationID) +1);
 		customerID = Common.inputNumber(scanner, "Enter customerID: ");
 		roomID = Common.inputNumber(scanner, "Enter roomID: ");
 		resDate = Common.inputString(scanner, "Enter reservation date ('YYYY-MM-DD'): ");
-		startTime = Common.inputString(scanner, "Enter start time (HH-MM-SS: ");
-		duration = Common.inputNumber(scanner, "Enter duration (in hours): ");
-		inStatus = Common.inputNumber(scanner, "Enter pet status: ");
-		membershipTier = Common.inputString(scanner, "Enter membership tier: ");
+		startTime = Common.inputString(scanner, "Enter start time (HH:MM AM/PM): ");
+		duration = Common.inputString(scanner, "Enter duration (HH:MM): ");
+		inStatus = Common.inputNumber(scanner, "Enter pet status (0/1): ");
+		membershipTier = Common.inputNumber(scanner, "Enter membership tier (0,1,2): ");
 		
 		resDate = "TO_DATE(" + "\'" + resDate + "\'" + ", \'YYYY-MM-DD\')";
-		startTime = "TO_TIME(" + "\'" + startTime + "\'" + ", \'HH:MM:SS\')";
 		
 		String query = "INSERT INTO Reservation (reservationID, customerID, roomID"
 				+ ", resDate, startTime, duration, inStatus, membershipTier) "
@@ -250,23 +321,65 @@ public class AddToTable {
 	 */
 	private static String addToTotalOrder(Scanner scanner) {
 		String orderID = "", memberID = "", reservationID = "", orderTime = "",
-				totalPrice = "", paymentStatus = "", orderDate = "";
-		orderID = Common.inputNumber(scanner, "Enter orderID: ");
+				totalPrice = "", paymentStatus = "", orderDate = "", orderStatus="";
+		ArrayList<ResultSet> orderIDs = Prog4.runQuery("SELECT MAX(orderID) AS lastID FROM alexanderxhaufe.TotalOrder");
+		try {
+			orderID = "" + (Integer.parseInt(orderIDs.get(0).getString("orderID")) +1);
+		} catch (NumberFormatException e) {
+			System.out.println("Error: that wasn't a number!\n");
+			e.printStackTrace();
+		} catch (SQLException e) {
+			System.out.println("Error with retrieving max orderID\n");
+			e.printStackTrace();
+		}
+		//orderID = Prog4.runQuery("SELECT MAX(orderID) AS lastID FROM alexanderxhaufe.TotalOrder");
+		orderID = "" + (Integer.parseInt(orderID) +1);
+		//orderID = Common.inputNumber(scanner, "Enter orderID: ");
 		memberID = Common.inputNumber(scanner, "Enter memberID: ");
 		reservationID = Common.inputNumber(scanner, "Enter reservationID: ");
-		orderTime = Common.inputString(scanner, "Enter order time (HH-MM-SS: ");
-		totalPrice = Common.inputNumber(scanner, "Enter price (xx.xx): ");
-		paymentStatus = Common.inputString(scanner, "Enter payment status (y/n): ");
+		orderTime = Common.inputString(scanner, "Enter order time (HH-MM-SS): ");
+		totalPrice = Common.inputPrice(scanner, "Enter price (xx.xx): ");
+		paymentStatus = Common.inputNumber(scanner, "Enter payment status (0/1): ");
 		orderDate = Common.inputNumber(scanner, "Enter order date ('YYYY-MM-DD'): ");
-		
+		int statusOption = 0;
+		while (true) {
+			System.out.println("Select status:");
+			System.out.println("1. placed");
+			System.out.println("2. prepared");
+			System.out.println("delievered");
+			System.out.print("Enter status number: ");
+			try {
+				statusOption = scanner.nextInt();
+			} catch (InputMismatchException e) {
+				System.out.println("Invalid: Must be a number\n");
+				scanner.next(); // move scanner past invalid input
+				continue;
+			}
+			if (statusOption < 1 || statusOption > 3) {
+				System.out.println("Invalid: Must be between 1 and 3\n");
+				continue;
+			}
+			switch (statusOption) {
+				case 1:
+					orderStatus = "placed";
+					break;
+				case 2:
+					orderStatus = "prepared";
+					break;
+				case 3:
+					orderStatus = "delievered";
+					break;
+			}
+			break;
+		}
 		orderDate = "TO_DATE(" + "\'" + orderDate + "\'" + ", \'YYYY-MM-DD\')";
 		orderTime = "TO_TIME(" + "\'" + orderTime + "\'" + ", \'HH:MM:SS\')";
 		
 		String query = "INSERT INTO TotalOrder (orderID, memberID, reservationID,"
-				+ " orderTime, totalPrice, paymentStatus, orderDate) "
+				+ " orderTime, totalPrice, paymentStatus, orderDate, orderStatus) "
 				+ "VALUES (" + orderID + ", " + memberID + ", " +
 				reservationID + ", " + orderTime + ", " + totalPrice + ", "
-				+ paymentStatus + ", " + orderDate + ");";
+				+ paymentStatus + ", " + orderDate + ", " + orderStatus + ");";
 		// System.out.println("Successfully added new TotalOrder to datatable");
 		return query;
 		
@@ -322,7 +435,7 @@ public class AddToTable {
 
 			case 2:
 				// add EventBooking
-				query = addToEventBookinng(scanner);
+				query = addToEventBooking(scanner);
 				break;
 
 			case 3:
