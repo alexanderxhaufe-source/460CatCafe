@@ -49,14 +49,12 @@ public class DeleteFromTable {
 	 * -----------------------------------------------------------------------
 	 */
 	
-	public static String deleteFromTable(int tableValue, Connection dbconn, Scanner scanner) throws SQLException{
+	public static void deleteFromTable(int tableValue, Connection dbconn, Scanner scanner) throws SQLException{
 		String query = "";
 		String userString = "";
 		int userChoice = 0;
-		int userChoice2 = 0;
 		Statement stmt = null;
 		ResultSet answer = null;
-		String query = "";
 		switch (tableValue) {
 			case 1:
 				//delete from Adoption
@@ -91,9 +89,8 @@ public class DeleteFromTable {
 					return;
 				}
 				//Ony get here if adoptionID not found in db
-				System.out.pritnln("Could not find an adoption record where appID = "+userChoice);
+				System.out.println("Could not find an adoption record where appID = "+userChoice);
 				return;
-				break;
 
 			case 2:
 				// delete from EventBooking
@@ -129,13 +126,11 @@ public class DeleteFromTable {
 				//Only get here if bookingID not found in db
 				System.out.println("Could not find an event booking where bookingID = "+userChoice);
 				return;
-				break;
 
 			case 3:
 				//Delete from HealthRecord
 				System.out.println("Health records are legal documents and cannot be deleted, instead modify it to be marked void");
 				return;
-				break;
 
 			case 4:
 				// Delete From Member
@@ -264,7 +259,6 @@ public class DeleteFromTable {
 				
 				System.out.println("Member with memberID "+userChoice+" deleted");
 				return;
-				break;
 
 			case 5:
 				// delete from Pet
@@ -310,7 +304,6 @@ public class DeleteFromTable {
 				System.out.println("Pet with petID "+userChoice+" has been deleted");
 				
 				return;
-				break;
 
 			case 6:
 				// Delete from Reservation
@@ -361,12 +354,11 @@ public class DeleteFromTable {
 				}
 
 				//if here delete reservation
-				query = "delete from Reservation where reservationID = '"userChoice+"'";
+				query = "delete from Reservation where reservationID = '"+userChoice+"'";
 				stmt = dbconn.createStatement();
 				stmt.executeQuery(query);
 				System.out.println("Deleted Reservation with reservationID "+userChoice);
 				return;
-				break;
 
 			case 7:
 				// delete from TotalOrder
@@ -383,6 +375,7 @@ public class DeleteFromTable {
 					if (userChoice == -1) {
 						return;
 					}
+					break;
 				}
 				scanner.nextLine(); // move scanner
 				query = "select * from TotalOrder "
@@ -399,7 +392,6 @@ public class DeleteFromTable {
 				stmt.executeQuery(query);
 				System.out.println("Order with orderID "+userChoice+"deleted");
 				return;
-				break;
 
 			default:
 				System.out.println("Invalid Value in DeleteFromTable()");
