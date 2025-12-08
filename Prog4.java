@@ -178,7 +178,7 @@ public class Prog4 {
                 // TODO: implement this
                 break;
             case 3: // delete a record from a table
-                // TODO: implement this
+                DeleteFromTable.deleteFromTable(tableNum, dbconn, scanner);
                 break;
         }
         return;
