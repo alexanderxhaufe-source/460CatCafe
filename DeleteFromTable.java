@@ -49,354 +49,442 @@ public class DeleteFromTable {
 	 * -----------------------------------------------------------------------
 	 */
 	
-	public static void deleteFromTable(int tableValue, Connection dbconn, Scanner scanner) throws SQLException{
-		String query = "";
-		String userString = "";
-		int userChoice = 0;
-		Statement stmt = null;
-		ResultSet answer = null;
-		switch (tableValue) {
-			case 1:
-				//delete from Adoption
-				while (true){
-					System.out.println("Enter the appID to delete or -1 to cancel:");
+	public static void deleteFromTable(int tableValue, Connection dbconn, Scanner scanner){
+			String query = "";
+			int userChoice = 0;
+			Statement stmt = null;
+			ResultSet answer = null;
+			switch (tableValue) {
+				case 1:
+					//delete from Adoption
+					while (true){
+						System.out.println("Enter the appID to delete or -1 to cancel:");
 
-					try {
-						userChoice = scanner.nextInt();
-					} catch(InputMismatchException e) {
-						System.out.println("Invalid input\n");
-						scanner.next();
-						continue;
+						try {
+							userChoice = scanner.nextInt();
+						} catch(InputMismatchException e) {
+							System.out.println("Invalid input\n");
+							scanner.next();
+							continue;
+						}
+						System.out.println();
+						if (userChoice == -1) {
+							return;
+						}
+						break;
 					}
-					System.out.println();
-					if (userChoice == -1) {
+					scanner.nextLine(); //move scanner
+					try {
+						query = "select * from Adoption where appID = '"+userChoice+"'";
+						stmt = dbconn.createStatement();
+						answer = stmt.executeQuery(query);
+						if (answer.next()){
+							if (answer.getString("status")=="pending"){
+								query = "delete from Adoption where appID = '"+userChoice+"'";
+							} else {
+								query = "update Adoption set status = withdrawn where appID = '"+userChoice+"'";
+							}
+							stmt = dbconn.createStatement();
+							stmt.executeQuery(query);
+							return;
+						}
+					} catch (SQLException e) {
+						System.err.println("*** SQLException:  "
+								+ "Could not delete from Adoption applications.");
+						System.err.println("\tMessage:   " + e.getMessage());
+						System.err.println("\tSQLState:  " + e.getSQLState());
+						System.err.println("\tErrorCode: " + e.getErrorCode());
 						return;
 					}
-					break;
-				}
-				scanner.nextLine(); //move scanner
-				query = "select * from Adoption where appID = '"+userChoice+"'";
-				stmt = dbconn.createStatement();
-				answer = stmt.executeQuery(query);
-				if (answer.next()){
-					if (answer.getString("status")=="pending"){
-						query = "delete from Adoption where appID = '"+userChoice+"'";
-					} else {
-						query = "update Adoption set status = withdrawn where appID = '"+userChoice+"'";
-					}
-					stmt = dbconn.createStatement();
-					stmt.executeQuery(query);
+					//Ony get here if adoptionID not found in db
+					System.out.println("Could not find an adoption record where appID = "+userChoice);
 					return;
-				}
-				//Ony get here if adoptionID not found in db
-				System.out.println("Could not find an adoption record where appID = "+userChoice);
-				return;
 
-			case 2:
-				// delete from EventBooking
-				while (true){
-					System.out.println("Enter the bookingID of what to delete or -1 to cancel:");
+				case 2:
+					// delete from EventBooking
+					while (true){
+						System.out.println("Enter the bookingID of what to delete or -1 to cancel:");
 
-					try {
-						userChoice = scanner.nextInt();
-					} catch(InputMismatchException e) {
-						System.out.println("Invalid input\n");
-						scanner.next();
-						continue;
+						try {
+							userChoice = scanner.nextInt();
+						} catch(InputMismatchException e) {
+							System.out.println("Invalid input\n");
+							scanner.next();
+							continue;
+						}
+						System.out.println();
+						if (userChoice == -1) {
+							return;
+						}
+						break;
 					}
-					System.out.println();
-					if (userChoice == -1) {
+					scanner.nextLine(); // move scanner
+					try {
+						query = "select * from EventBooking where bookingID = '"+userChoice+"'";
+						stmt = dbconn.createStatement();
+						answer = stmt.executeQuery(query);
+						if (answer.next()){
+							if (answer.getInt("paymentStatus")==2){
+								query = "delete from EventBooking where bookingID = '"+userChoice+"'";
+							} // changing to canceled will be handled in modify table not here
+							
+							stmt = dbconn.createStatement();
+							stmt.executeQuery(query);
+							return;
+						}
+					} catch (SQLException e) {
+						System.err.println("*** SQLException:  "
+								+ "Could not delete from EventBooking.");
+						System.err.println("\tMessage:   " + e.getMessage());
+						System.err.println("\tSQLState:  " + e.getSQLState());
+						System.err.println("\tErrorCode: " + e.getErrorCode());
 						return;
 					}
-					break;
-				}
-				scanner.nextLine(); // move scanner
-				query = "select * from EventBooking where bookingID = '"+userChoice+"'";
-				stmt = dbconn.createStatement();
-				answer = stmt.executeQuery(query);
-				if (answer.next()){
-					if (answer.getInt("paymentStatus")==2){
-						query = "delete from EventBooking where bookingID = '"+userChoice+"'";
-					} // changing to canceled will be handled in modify table not here
+					//Only get here if bookingID not found in db
+					System.out.println("Could not find an event booking where bookingID = "+userChoice);
+					return;
+
+				case 3:
+					//Delete from HealthRecord
+					System.out.println("Health records are legal documents and cannot be deleted, instead modify it to be marked void");
+					return;
+
+				case 4:
+					// Delete From Member
+					while (true){
+						System.out.println("Enter the memberID of the account to delete or -1 to cancel:");
+						try {
+							userChoice = scanner.nextInt();
+						} catch(InputMismatchException e) {
+							System.out.println("Invalid input\n");
+							scanner.next();
+							continue;
+						}
+						System.out.println();
+						if (userChoice == -1) {
+							return;
+						}
+						break;
+					}
+					scanner.nextLine(); // move scanner
+
+					//check for future reservations
+					try {
+						query = "select Member.*, Reservation.bookDate, Reservation.reservationID"
+							+"from Member, Reservation "
+							+"where Member.memberID = '"+userChoice+"' "
+							+"and Member.memberID = Reservation.memberID "
+							+"and Reservation.bookDate > SYSDATE";
+						stmt = dbconn.createStatement();
+						answer = stmt.executeQuery(query);
+						if (answer.next()){
+							String errMessage = "Cannot delete member with id "+userChoice+" as they have the following reservations with reservationID:";
+								while (true) {
+									errMessage = errMessage + "\n" + answer.getInt("reservationID");
+									if (!answer.next()) {
+										break;
+									}
+								}
+							System.out.println(errMessage);
+							return;
+						}
+						//check for pending adoption applications
+						query = "select Member.*, Adoption.appID "
+							+"from Member, Adoption "
+							+"where Member.memberID = '"+userChoice+"' "
+							+"and Member.memberID = Adoption.memberID "
+							+"and Adoption.status = pending";
+						stmt = dbconn.createStatement();
+						answer = stmt.executeQuery(query);
+						if (answer.next()){
+							String errMessage = "Cannot delete member with id "+userChoice+" as they have the following pending adoption applications with appID:";
+								while (true) {
+									errMessage = errMessage + "\n" + answer.getInt("appID");
+									if (!answer.next()) {
+										break;
+									}
+								}
+							System.out.println(errMessage);
+							return;
+						}
+						// check for unpaid food orders
+						query = "select Member.*, TotalOrder.orderID "
+							+"from Member, TotalOrder "
+							+"where Member.memberID = '"+userChoice+"' "
+							+"and Member.memberID = TotalOrder.memberID "
+							+"and TotalOrder.paymentStatus = 0";
+						stmt = dbconn.createStatement();
+						answer = stmt.executeQuery(query);
+						if (answer.next()){
+							String errMessage = "Cannot delete member with id "+userChoice+" as they have the following unpaid orders with orderID:";
+								while (true) {
+									errMessage = errMessage + "\n" + answer.getInt("orderID");
+									if (!answer.next()) {
+										break;
+									}
+								}
+							System.out.println(errMessage);
+							return;
+						}
+					} catch (SQLException e) {
+						System.err.println("*** SQLException:  "
+								+ "Could verify member is ready for deletion.");
+						System.err.println("\tMessage:   " + e.getMessage());
+						System.err.println("\tSQLState:  " + e.getSQLState());
+						System.err.println("\tErrorCode: " + e.getErrorCode());
+						return;
+					}
+					//If here, member is able to be deleted
+					// delete member and all related records
+					//related records being: reservation, application, eventBooking
+					//TotalOrder left for money tracking
 					
-					stmt = dbconn.createStatement();
-					stmt.executeQuery(query);
-					return;
-				}
-				//Only get here if bookingID not found in db
-				System.out.println("Could not find an event booking where bookingID = "+userChoice);
-				return;
-
-			case 3:
-				//Delete from HealthRecord
-				System.out.println("Health records are legal documents and cannot be deleted, instead modify it to be marked void");
-				return;
-
-			case 4:
-				// Delete From Member
-				while (true){
-					System.out.println("Enter the memberID of the account to delete or -1 to cancel:");
+					//deleting members old reservations
 					try {
-						userChoice = scanner.nextInt();
-					} catch(InputMismatchException e) {
-						System.out.println("Invalid input\n");
-						scanner.next();
-						continue;
-					}
-					System.out.println();
-					if (userChoice == -1) {
+						query = "select Member.*, Reservation.bookDate, Reservation.reservationID "
+							+"from Member, Reservation "
+							+"where Member.memberID = '"+userChoice+"' "
+							+"and Member.memberID = Reservation.memberID ";
+						stmt = dbconn.createStatement();
+						answer = stmt.executeQuery(query);
+						while (answer.next()){
+							query = "delete from Reservation where reservationID = '"+answer.getInt("reservationID")+"'";
+							stmt = dbconn.createStatement();
+							answer = stmt.executeQuery(query);
+						}
+
+						//deleting members old pet applications
+						query = "select Member.*, Adoption.appID "
+							+"from Member, Adoption "
+							+"where Member.memberID = '"+userChoice+"' "
+							+"and Member.memberID = Adoption.appID ";
+						stmt = dbconn.createStatement();
+						answer = stmt.executeQuery(query);
+						while (answer.next()){
+							query = "delete from Adoption where appID = '"+answer.getInt("appID")+"'";
+							stmt = dbconn.createStatement();
+							answer = stmt.executeQuery(query);
+						}
+
+						//deleting members old evenBookings
+						query = "select Member.*, EventBooking.bookingID "
+							+"from Member, EventBooking "
+							+"where Member.memberID = '"+userChoice+"' "
+							+"and Member.memberID = EventBooking.bookingID ";
+						stmt = dbconn.createStatement();
+						answer = stmt.executeQuery(query);
+						while (answer.next()){
+							query = "delete from EventBooking where bookingID = '"+answer.getInt("bookingID")+"'";
+							stmt = dbconn.createStatement();
+							answer = stmt.executeQuery(query);
+						}
+						
+						//deteting member account
+						query = "delete from Member where memberID = '"+userChoice+"'";
+						stmt = dbconn.createStatement();
+						answer = stmt.executeQuery(query);
+					} catch (SQLException e) {
+						System.err.println("*** SQLException:  "
+								+ "Could not delete member account.");
+						System.err.println("\tMessage:   " + e.getMessage());
+						System.err.println("\tSQLState:  " + e.getSQLState());
+						System.err.println("\tErrorCode: " + e.getErrorCode());
 						return;
 					}
-					break;
-				}
-				scanner.nextLine(); // move scanner
-
-				//check for future reservations
-				query = "select Member.*, Reservation.bookDate, Reservation.reservationID"
-					+"from Member, Reservation "
-					+"where Member.memberID = '"+userChoice+"' "
-					+"and Member.memberID = Reservation.memberID "
-					+"and Reservation.bookDate > SYSDATE";
-				stmt = dbconn.createStatement();
-				answer = stmt.executeQuery(query);
-				if (answer.next()){
-					String errMessage = "Cannot delete member with id "+userChoice+" as they have the following reservations with reservationID:";
-						while (true) {
-							errMessage = errMessage + "\n" + answer.getInt("reservationID");
-							if (!answer.next()) {
-								break;
-							}
-						}
-					System.out.println(errMessage);
+					
+					System.out.println("Member with memberID "+userChoice+" deleted");
 					return;
-				}
-				//check for pending adoption applications
-				query = "select Member.*, Adoption.appID "
-					+"from Member, Adoption "
-					+"where Member.memberID = '"+userChoice+"' "
-					+"and Member.memberID = Adoption.memberID "
-					+"and Adoption.status = pending";
-				stmt = dbconn.createStatement();
-				answer = stmt.executeQuery(query);
-				if (answer.next()){
-					String errMessage = "Cannot delete member with id "+userChoice+" as they have the following pending adoption applications with appID:";
-						while (true) {
-							errMessage = errMessage + "\n" + answer.getInt("appID");
-							if (!answer.next()) {
-								break;
-							}
+
+				case 5:
+					// delete from Pet
+					while (true){
+						System.out.println("Enter the petID of the pet record to remove or -1 to cancel");
+						try {
+							userChoice = scanner.nextInt();
+						} catch(InputMismatchException e) {
+							System.out.println("Invalid input\n");
+							scanner.next();
+							continue;
 						}
-					System.out.println(errMessage);
-					return;
-				}
-				// check for unpaid food orders
-				query = "select Member.*, TotalOrder.orderID "
-					+"from Member, TotalOrder "
-					+"where Member.memberID = '"+userChoice+"' "
-					+"and Member.memberID = TotalOrder.memberID "
-					+"and TotalOrder.paymentStatus = 0";
-				stmt = dbconn.createStatement();
-				answer = stmt.executeQuery(query);
-				if (answer.next()){
-					String errMessage = "Cannot delete member with id "+userChoice+" as they have the following unpaid orders with orderID:";
-						while (true) {
-							errMessage = errMessage + "\n" + answer.getInt("orderID");
-							if (!answer.next()) {
-								break;
-							}
+						System.out.println();
+						if (userChoice == -1) {
+							return;
 						}
-					System.out.println(errMessage);
-					return;
-				}
-				//If here, member is able to be deleted
-				// delete member and all related records
-				//related records being: reservation, application, eventBooking
-				//TotalOrder left for money tracking
-				
-				//deleting members old reservations
-				query = "select Member.*, Reservation.bookDate, Reservation.reservationID "
-					+"from Member, Reservation "
-					+"where Member.memberID = '"+userChoice+"' "
-					+"and Member.memberID = Reservation.memberID ";
-				stmt = dbconn.createStatement();
-				answer = stmt.executeQuery(query);
-				while (answer.next()){
-					query = "delete from Reservation where reservationID = '"+answer.getInt("reservationID")+"'";
-					stmt = dbconn.createStatement();
-					answer = stmt.executeQuery(query);
-				}
-
-				//deleting members old pet applications
-				query = "select Member.*, Adoption.appID "
-					+"from Member, Adoption "
-					+"where Member.memberID = '"+userChoice+"' "
-					+"and Member.memberID = Adoption.appID ";
-				stmt = dbconn.createStatement();
-				answer = stmt.executeQuery(query);
-				while (answer.next()){
-					query = "delete from Adoption where appID = '"+answer.getInt("appID")+"'";
-					stmt = dbconn.createStatement();
-					answer = stmt.executeQuery(query);
-				}
-
-				//deleting members old evenBookings
-				query = "select Member.*, EventBooking.bookingID "
-					+"from Member, EventBooking "
-					+"where Member.memberID = '"+userChoice+"' "
-					+"and Member.memberID = EventBooking.bookingID ";
-				stmt = dbconn.createStatement();
-				answer = stmt.executeQuery(query);
-				while (answer.next()){
-					query = "delete from EventBooking where bookingID = '"+answer.getInt("bookingID")+"'";
-					stmt = dbconn.createStatement();
-					answer = stmt.executeQuery(query);
-				}
-				
-				//deteting member account
-				query = "delete from Member where memberID = '"+userChoice+"'";
-				stmt = dbconn.createStatement();
-				answer = stmt.executeQuery(query);
-				
-				System.out.println("Member with memberID "+userChoice+" deleted");
-				return;
-
-			case 5:
-				// delete from Pet
-				while (true){
-					System.out.println("Enter the petID of the pet record to remove or -1 to cancel");
-					try {
-						userChoice = scanner.nextInt();
-					} catch(InputMismatchException e) {
-						System.out.println("Invalid input\n");
-						scanner.next();
-						continue;
+						break;
 					}
-					System.out.println();
-					if (userChoice == -1) {
+					scanner.nextLine(); // move scanner
+					//verify no pending adoption applications
+					try {
+						query = "select Pet.*, Adoption.appID "
+							+"from Pet, Adoption "
+							+"where Pet.petID = '"+userChoice+"' "
+							+"and Pet.petID = Adoption.petID "
+							+"and Adoption.status = pending";
+						stmt = dbconn.createStatement();
+						answer = stmt.executeQuery(query);
+						if (answer.next()){
+							String errMessage = "Cannot delete pet with id "+userChoice+" as they have the following pending adoption applications with appID:";
+								while (true) {
+									errMessage = errMessage + "\n" + answer.getInt("appID");
+									if (!answer.next()) {
+										break;
+									}
+								}
+							System.out.println(errMessage);
+							return;
+						}
+					} catch (SQLException e) {
+						System.err.println("*** SQLException:  "
+								+ "Could not verify pet account is ready for deletion.");
+						System.err.println("\tMessage:   " + e.getMessage());
+						System.err.println("\tSQLState:  " + e.getSQLState());
+						System.err.println("\tErrorCode: " + e.getErrorCode());
 						return;
 					}
-					break;
-				}
-				scanner.nextLine(); // move scanner
-				//verify no pending adoption applications
-				query = "select Pet.*, Adoption.appID "
-					+"from Pet, Adoption "
-					+"where Pet.petID = '"+userChoice+"' "
-					+"and Pet.petID = Adoption.petID "
-					+"and Adoption.status = pending";
-				stmt = dbconn.createStatement();
-				answer = stmt.executeQuery(query);
-				if (answer.next()){
-					String errMessage = "Cannot delete pet with id "+userChoice+" as they have the following pending adoption applications with appID:";
-						while (true) {
-							errMessage = errMessage + "\n" + answer.getInt("appID");
-							if (!answer.next()) {
-								break;
-							}
-						}
-					System.out.println(errMessage);
-					return;
-				}
-				//delete pet
-				query = "delete from Pet where petID = '"+userChoice+"'";
-				stmt = dbconn.createStatement();
-				answer = stmt.executeQuery(query);
-				System.out.println("Pet with petID "+userChoice+" has been deleted");
-				
-				return;
-
-			case 6:
-				// Delete from Reservation
-				while (true){
-					System.out.println("Enter the reservationID of the resrvation to delete or -1 to cancel");
+					//delete pet
 					try {
-						userChoice = scanner.nextInt();
-					} catch(InputMismatchException e) {
-						System.out.println("Invalid input\n");
-						scanner.next();
-						continue;
-					}
-					System.out.println();
-					if (userChoice == -1) {
+						query = "delete from Pet where petID = '"+userChoice+"'";
+						stmt = dbconn.createStatement();
+						answer = stmt.executeQuery(query);
+					} catch (SQLException e) {
+						System.err.println("*** SQLException:  "
+								+ "Could not delete pet account.");
+						System.err.println("\tMessage:   " + e.getMessage());
+						System.err.println("\tSQLState:  " + e.getSQLState());
+						System.err.println("\tErrorCode: " + e.getErrorCode());
 						return;
 					}
-					break;
-				}
-				scanner.nextLine(); // move scanner
-				//check if it is before the reservation time
-				query = "select * from Reservation "
-					+"where Reservation.reservationID = '"+userChoice+"' "
-					+"and Reservation.resDate < SYSDATE";
-				stmt = dbconn.createStatement();
-				answer = stmt.executeQuery(query);
-				if (answer.next()){
-					System.out.println("Can only delete future reservations, the reservation with reservationID "+userChoice+" remains");
+					System.out.println("Pet with petID "+userChoice+" has been deleted");
+					
 					return;
-				}
-				//paymentStatus = 2 is for if the order is canceled and/or refunded
-				query = "select Reservation.*, TotalOrder.orderID "
-					+"from Reservation, TotalOrder "
-					+"where Reservation.reservationID = '"+userChoice+"' "
-					+"and Reservation.reservationID = TotalOrder.reservationID "
-					+"and TotalOrder.paymentStatus <> 2";
-				stmt = dbconn.createStatement();
-				answer = stmt.executeQuery(query);
-				if (answer.next()){
-					String errMessage = "Cannot delete reservation with id "+userChoice+" as they have the following accociated order(s) with orderID:";
-						while (true) {
-							errMessage = errMessage + "\n" + answer.getInt("orderID");
-							if (!answer.next()) {
-								break;
-							}
+
+				case 6:
+					// Delete from Reservation
+					while (true){
+						System.out.println("Enter the reservationID of the resrvation to delete or -1 to cancel");
+						try {
+							userChoice = scanner.nextInt();
+						} catch(InputMismatchException e) {
+							System.out.println("Invalid input\n");
+							scanner.next();
+							continue;
 						}
-					System.out.println(errMessage);
-					return;
-				}
-
-				//if here delete reservation
-				query = "delete from Reservation where reservationID = '"+userChoice+"'";
-				stmt = dbconn.createStatement();
-				stmt.executeQuery(query);
-				System.out.println("Deleted Reservation with reservationID "+userChoice);
-				return;
-
-			case 7:
-				// delete from TotalOrder
-				while (true){
-					System.out.println("Enter the orderID of the order to delete or -1 to cancel");
-					try {
-						userChoice = scanner.nextInt();
-					} catch(InputMismatchException e) {
-						System.out.println("Invalid input\n");
-						scanner.next();
-						continue;
+						System.out.println();
+						if (userChoice == -1) {
+							return;
+						}
+						break;
 					}
-					System.out.println();
-					if (userChoice == -1) {
+					scanner.nextLine(); // move scanner
+					//check if it is before the reservation time
+					try {
+						query = "select * from Reservation "
+							+"where Reservation.reservationID = '"+userChoice+"' "
+							+"and Reservation.resDate < SYSDATE";
+						stmt = dbconn.createStatement();
+						answer = stmt.executeQuery(query);
+						if (answer.next()){
+							System.out.println("Can only delete future reservations, the reservation with reservationID "+userChoice+" remains");
+							return;
+						}
+						//paymentStatus = 2 is for if the order is canceled and/or refunded
+
+						query = "select Reservation.*, TotalOrder.orderID "
+							+"from Reservation, TotalOrder "
+							+"where Reservation.reservationID = '"+userChoice+"' "
+							+"and Reservation.reservationID = TotalOrder.reservationID "
+							+"and TotalOrder.paymentStatus <> 2";
+						stmt = dbconn.createStatement();
+						answer = stmt.executeQuery(query);
+					} catch (SQLException e) {
+						System.err.println("*** SQLException:  "
+								+ "Could not verify reservation can be deleted.");
+						System.err.println("\tMessage:   " + e.getMessage());
+						System.err.println("\tSQLState:  " + e.getSQLState());
+						System.err.println("\tErrorCode: " + e.getErrorCode());
 						return;
 					}
-					break;
-				}
-				scanner.nextLine(); // move scanner
-				query = "select * from TotalOrder "
-					+"where orderID = '"+userChoice+"' "
-					+"and status <> placed";
-				stmt = dbconn.createStatement();
-				answer = stmt.executeQuery(query);
-				if (answer.next()){
-					System.out.println("Can only delete orders that have yet to have any items prepared or delivered");
+					if (answer.next()){
+						String errMessage = "Cannot delete reservation with id "+userChoice+" as they have the following accociated order(s) with orderID:";
+							while (true) {
+								errMessage = errMessage + "\n" + answer.getInt("orderID");
+								if (!answer.next()) {
+									break;
+								}
+							}
+						System.out.println(errMessage);
+						return;
+					}
+					try {
+					//if here delete reservation
+						query = "delete from Reservation where reservationID = '"+userChoice+"'";
+						stmt = dbconn.createStatement();
+						stmt.executeQuery(query);
+					} catch (SQLException e) {
+						System.err.println("*** SQLException:  "
+								+ "Could not delete reservation.");
+						System.err.println("\tMessage:   " + e.getMessage());
+						System.err.println("\tSQLState:  " + e.getSQLState());
+						System.err.println("\tErrorCode: " + e.getErrorCode());
+						return;
+					}
+					System.out.println("Deleted Reservation with reservationID "+userChoice);
 					return;
-				}
-				query = "delete from TotalOrder where orderID ='"+userChoice+"'";
-				stmt = dbconn.createStatement();
-				stmt.executeQuery(query);
-				System.out.println("Order with orderID "+userChoice+"deleted");
-				return;
 
-			default:
-				System.out.println("Invalid Value in DeleteFromTable()");
-				break;
-			
-		}
+				case 7:
+					// delete from TotalOrder
+					while (true){
+						System.out.println("Enter the orderID of the order to delete or -1 to cancel");
+						try {
+							userChoice = scanner.nextInt();
+						} catch(InputMismatchException e) {
+							System.out.println("Invalid input\n");
+							scanner.next();
+							continue;
+						}
+						System.out.println();
+						if (userChoice == -1) {
+							return;
+						}
+						break;
+					}
+					scanner.nextLine(); // move scanner
+					try {
+						query = "select * from TotalOrder "
+							+"where orderID = '"+userChoice+"' "
+							+"and status <> placed";
+						stmt = dbconn.createStatement();
+						answer = stmt.executeQuery(query);
+					} catch (SQLException e) {
+						System.err.println("*** SQLException:  "
+								+ "Could not verify order could be deleted.");
+						System.err.println("\tMessage:   " + e.getMessage());
+						System.err.println("\tSQLState:  " + e.getSQLState());
+						System.err.println("\tErrorCode: " + e.getErrorCode());
+						return;
+					}
+					if (answer.next()){
+						System.out.println("Can only delete orders that have yet to have any items prepared or delivered");
+						return;
+					}
+					try {
+						query = "delete from TotalOrder where orderID ='"+userChoice+"'";
+						stmt = dbconn.createStatement();
+						stmt.executeQuery(query);
+					} catch (SQLException e) {
+						System.err.println("*** SQLException:  "
+								+ "Could not delete order.");
+						System.err.println("\tMessage:   " + e.getMessage());
+						System.err.println("\tSQLState:  " + e.getSQLState());
+						System.err.println("\tErrorCode: " + e.getErrorCode());
+						return;
+					}
+					System.out.println("Order with orderID "+userChoice+"deleted");
+					return;
+
+				default:
+					System.out.println("Invalid Value in DeleteFromTable()");
+					break;
+			}
 	}
 }
