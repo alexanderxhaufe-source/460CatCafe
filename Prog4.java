@@ -1,5 +1,3 @@
-package catCafe;
-
 /* Authors: Jessica McManus, Alexander Haufe, Aleksei Weinberg
  * Course: CSC 460 Database Design
  * Assignment: Program 4
@@ -162,7 +160,13 @@ public class Prog4 {
                 ModifyTable.modTable(tableNum, scanner, dbconn);
                 break;
             case 3: // delete a record from a table
-                // TODO: implement this
+                try {
+                    DeleteFromTable.deleteFromTable(tableNum, dbconn, scanner);
+                }
+                catch (SQLException e) {
+			        System.err.println("\tMessage:   " + e.getMessage());
+                    // TODO: handle exceptions that are thrown by deletefromtable
+                }
                 break;
         }
         return;
@@ -205,13 +209,13 @@ public class Prog4 {
                     QueryHold.query1(dbconn, pet_name);
                     break;
                 case 2:
-                    // TODO: query2
+                    QueryHold.query2(dbconn);
                     break;
                 case 3:
                     QueryHold.query3(dbconn);
                     break;
                 case 4:
-                    // TODO: query4
+                    QueryHold.query4(dbconn, scanner);
                     break;
                 default:
                     System.out.println("Invalid input\n");
