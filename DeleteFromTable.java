@@ -396,23 +396,23 @@ public class DeleteFromTable {
 							+"and TotalOrder.paymentStatus <> 2";
 						stmt = dbconn.createStatement();
 						answer = stmt.executeQuery(query);
+						if (answer.next()){
+							String errMessage = "Cannot delete reservation with id "+userChoice+" as they have the following accociated order(s) with orderID:";
+								while (true) {
+									errMessage = errMessage + "\n" + answer.getInt("orderID");
+									if (!answer.next()) {
+										break;
+									}
+								}
+							System.out.println(errMessage);
+							return;
+						}
 					} catch (SQLException e) {
 						System.err.println("*** SQLException:  "
 								+ "Could not verify reservation can be deleted.");
 						System.err.println("\tMessage:   " + e.getMessage());
 						System.err.println("\tSQLState:  " + e.getSQLState());
 						System.err.println("\tErrorCode: " + e.getErrorCode());
-						return;
-					}
-					if (answer.next()){
-						String errMessage = "Cannot delete reservation with id "+userChoice+" as they have the following accociated order(s) with orderID:";
-							while (true) {
-								errMessage = errMessage + "\n" + answer.getInt("orderID");
-								if (!answer.next()) {
-									break;
-								}
-							}
-						System.out.println(errMessage);
 						return;
 					}
 					try {
@@ -455,16 +455,16 @@ public class DeleteFromTable {
 							+"and status <> placed";
 						stmt = dbconn.createStatement();
 						answer = stmt.executeQuery(query);
+						if (answer.next()){
+							System.out.println("Can only delete orders that have yet to have any items prepared or delivered");
+							return;
+						}
 					} catch (SQLException e) {
 						System.err.println("*** SQLException:  "
 								+ "Could not verify order could be deleted.");
 						System.err.println("\tMessage:   " + e.getMessage());
 						System.err.println("\tSQLState:  " + e.getSQLState());
 						System.err.println("\tErrorCode: " + e.getErrorCode());
-						return;
-					}
-					if (answer.next()){
-						System.out.println("Can only delete orders that have yet to have any items prepared or delivered");
 						return;
 					}
 					try {
