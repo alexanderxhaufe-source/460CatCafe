@@ -1,3 +1,5 @@
+
+
 /* Authors: Jessica McManus, Alexander Haufe, Aleksei Weinberg
  * Course: CSC 460 Database Design
  * Assignment: Program 4
@@ -140,7 +142,8 @@ public class AddToTable {
 	 */
 	private static String addToHealthRecord(Scanner scanner) {
 		String recordID = "", petID = "", employeeID = "", recordDate = "",
-				recordType = "", description = "", nextDueDate = "";
+				recordType = "", description = "", nextDueDate = "", 
+				validity="", invalidReason="";
 		ArrayList<ResultSet> recordIDs = Prog4.runQuery("SELECT MAX(recordID) AS lastID FROM alexanderxhaufe.HealthRecord");
 		try {
 			recordID = "" + (Integer.parseInt(recordIDs.get(0).getString("recordID")) +1);
@@ -160,15 +163,46 @@ public class AddToTable {
 		recordType = Common.inputString(scanner, "Enter recordType: ");
 		description = Common.inputString(scanner, "Enter description: ");
 		nextDueDate = Common.inputString(scanner, "Enter next Due Date (YYYY-MM-DD): ");
+		description = Common.inputString(scanner, "Enter description: ");
+		int statusOption = 0;
+		while (true) {
+			System.out.println("Select validity:");
+			System.out.println("1. void");
+			System.out.println("2. valid");
+			System.out.print("Enter status number: ");
+			try {
+				statusOption = scanner.nextInt();
+			} catch (InputMismatchException e) {
+				System.out.println("Invalid: Must be a number\n");
+				scanner.next(); // move scanner past invalid input
+				continue;
+			}
+			if (statusOption < 1 || statusOption > 2) {
+				System.out.println("Invalid: Must be between 1 and 2\n");
+				continue;
+			}
+			switch (statusOption) {
+				case 1:
+					validity = "void";
+					break;
+				case 2:
+					validity = "valid";
+					break;
+			}
+			break;
+		}
+		invalidReason = Common.inputString(scanner, "Enter reason for invalid: ");
 		
 		recordDate = "TO_DATE(" + "\'" + recordDate + "\'" + ", \'YYYY-MM-DD\')";
 		nextDueDate = "TO_DATE(" + "\'" + nextDueDate + "\'" + ", \'YYYY-MM-DD\')";
 		
 		String query = "INSERT INTO HealthRecord (recordID, petID, employeeID, "
-				+ "recordDate, recordType, description, nextDueDate) "
+				+ "recordDate, recordType, description, nextDueDate, validity,"
+				+ " invalidReason) "
 				+ "VALUES (" + recordID + ", " + petID + ", " + employeeID
 				+ ", " + recordDate + ", " + recordType + ", " +
-				description + ", " + nextDueDate + ");";
+				description + ", " + nextDueDate + ", " + validity + ", " 
+				+ invalidReason +");";
 		// System.out.println("Successfully added new HealthRecord to datatable");
 		return query;
 		
@@ -344,7 +378,7 @@ public class AddToTable {
 			System.out.println("Select status:");
 			System.out.println("1. placed");
 			System.out.println("2. prepared");
-			System.out.println("delievered");
+			System.out.println("3. delievered");
 			System.out.print("Enter status number: ");
 			try {
 				statusOption = scanner.nextInt();
