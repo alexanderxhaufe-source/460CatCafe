@@ -63,7 +63,7 @@ public class Prog4 {
                 // TODO: finish this
                 break;
             case 2: // modify a table record
-                // TODO: implement this
+                ModifyTable.modTable(tableNum, scanner, dbconn);
                 break;
             case 3: // delete a record from a table
                 // TODO: implement this
