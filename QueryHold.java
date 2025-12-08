@@ -64,6 +64,65 @@ public class QueryHold {
                 stmt.close();
         }
 
+                /*
+         * Method: query3
+         * Purpose: print a list of customer visit history
+         * Parameters: Connection dbconn - the connection to the database
+         * Returns: void
+         * Throws: SQLException - if a database error occurs
+         * 
+         * Query: For a given customer, show their complete visit history 
+         *    including reservation dates, rooms visited, food orders placed 
+         *    during each visit, total amount spent, and membership tier at the
+         *    time of visit.
+         *
+         *         ** CURRENTLY UNTESTED
+         */
+         public static void query2(Connection dbconn) throws SQLException {
+                 Statement stmt = null; // statement to execute SQL query
+                 ResultSet answer = null; // result set returned by the query
+                 // list all upcoming events that have available capacity
+                 String query = """
+                 		SELECT 
+					m.memberID, 
+					m.firstName,
+					m.lastName,  
+					r.resDate, 
+					rm.roomID, 
+					mi.name, 
+					mi.price,
+					SUM(mi.price) OVER (PARTITION BY r.reservationID) AS totalCost,
+					r.membershipTier
+				FROM alexanderxhaufe.Member m
+				JOIN alexanderxhaufe.Reservation r
+					ON m.membershipID = r.customerID
+				JOIN alexanderxhaufe.room rm
+					ON r.roomID = rm.roomID
+				JOIN alexanderxhaufe.TotalOrder o
+					ON r.reservationID = o.reservationID
+				LEFT JOIN alexanderxhaufe.MenuItem mi
+					ON o.orderID = mi.orderID
+				WHERE m.memberID = :memberID
+				ORDER BY r.resDate	
+				""";
+                 stmt = dbconn.createStatement();
+                 answer = stmt.executeQuery(query);
+
+                 System.out.println("Customer has the following visit history:\n");
+                 // String toPrint = "";
+                 while (answer.next()) {
+                         System.out.println("MemberID: " + answer.getInt("memberID")
+                                         + " | FirstName: " + answer.getString("firstName")
+                                         + " | LastName: " + answer.getString("lastName")
+                                         + " | Date: " + answer.getDate("resDate")
+                                         + " | RoomID: " + answer.getInt("roomID")
+                                         + " | Items Ordered: " + answer.getString("name")
+                                         + " | Menu Cost: " + answer.getDouble("price"));
+                 }
+                 System.out.println();
+                 stmt.close();
+         }	//query2();
+
         /*
         * Method: query3
         * Purpose: print a list all upcoming events that have available capacity
@@ -135,6 +194,7 @@ public class QueryHold {
                 stmt.close();
         }
 }
+
 
 
 
