@@ -1,3 +1,5 @@
+package catCafe;
+
 /* Authors: Jessica McManus, Alexander Haufe, Aleksei Weinberg
  * Course: CSC 460 Database Design
  * Assignment: Program 4
@@ -13,6 +15,100 @@ import java.sql.*;
 import java.util.*;
 
 public class Prog4 {
+	
+	
+	/* runQuery()
+	 * Parameters: query, a String that is a properly-formatted SQL query
+	 * Returns: answerSet, an ArrayList of ResultSet objects. 
+	 * Purpose: Takes an SQL query string and runs it through Oracle,
+	 *    returning the output of the query as an ArrayList of 
+	 *    ResultSet objects
+	 * 
+	 * Now, what is a ResultSet? 
+	 * ResultSet objects are used to store entire entries from SQL 
+	 *    queries, and for convenience of multi-purpose use, it made
+	 *    the most sense to return an ArrayList that could then be
+	 *    manipulated for other use!
+	 *    
+	 *  how ResultSets work:
+	 *    for each ResultSet, you will have a row of a query responses. To get the
+	 *    data you need (where answerSet is an array of ResultSet objects:
+	 *       for (int i=0; i<answerSet.size(); i++){
+	 *          value = (answerSet.get(i)).getString/Int/ETC("NAME_OF_ATTRIBUTE")
+	 *          and now do whatever you need with value!
+	 *       }
+	 *       
+	 *    Hopefully, this helps!
+	 */
+	public static ArrayList<ResultSet> runQuery(String query) {
+		final String oracleURL = "jdbc:oracle:thin:@aloe.cs.arizona.edu:1521:oracle";
+
+        String username = "alexanderxhaufe";
+        String password = "a7394";
+
+		// load the (Oracle) JDBC driver by initializing its base
+		// class, 'oracle.jdbc.OracleDriver'.
+		try {
+			Class.forName("oracle.jdbc.OracleDriver");
+		} 
+		catch (ClassNotFoundException e) {
+			System.err.println("*** ClassNotFoundException:  " + "Error loading Oracle JDBC driver.  \n"
+					+ "\tPerhaps the driver is not on the Classpath?");
+			System.exit(-1);
+		}
+
+		// make and return a database connection to the user's
+		// Oracle database
+		Connection dbconn = null;
+		try {
+			dbconn = DriverManager.getConnection(oracleURL, username, password);
+
+		} 
+		catch (SQLException e) {
+
+			System.err.println("*** SQLException:  " + "Could not open JDBC connection.");
+			System.err.println("\tMessage:   " + e.getMessage());
+			System.err.println("\tSQLState:  " + e.getSQLState());
+			System.err.println("\tErrorCode: " + e.getErrorCode());
+			System.exit(-1);
+
+		}
+
+		// Send the query to the DBMS, and get and display the results
+		Statement stmt = null;
+		ResultSet answer = null;
+		ArrayList<ResultSet> answerSet = new ArrayList<>();
+		try {
+			stmt = dbconn.createStatement();
+			answer = stmt.executeQuery(query);
+			if (answer != null) {
+
+				/* we only really want to store the values so that they can be taken apart later
+				 * a base explanation of how to extract ResultSets is explained in the 
+				 *    head comment of this function.
+				 */
+				while (answer.next()) {
+					answerSet.add(answer);
+					//System.out.println(answer.getString("sno") + "\t" + answer.getInt("status"));
+				}
+			}
+			//System.out.println();
+
+			// Shut down the connection to the DBMS.
+			stmt.close();
+			dbconn.close();
+
+		} 
+		catch (SQLException e) {
+			System.err.println("*** SQLException:  " + "Could not fetch query results.");
+			System.err.println("\tMessage:   " + e.getMessage());
+			System.err.println("\tSQLState:  " + e.getSQLState());
+			System.err.println("\tErrorCode: " + e.getErrorCode());
+			System.exit(-1);
+		}
+		
+		return answerSet;
+	}
 
     /*
      * Method: manipMenu (short for manipulation menu)
