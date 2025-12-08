@@ -226,7 +226,7 @@ public class Prog4 {
             System.err.println("\tMessage:   " + e.getMessage());
             System.err.println("\tSQLState:  " + e.getSQLState());
             System.err.println("\tErrorCode: " + e.getErrorCode());
-            System.exit(-1);
+            return;
         }
     }
 
