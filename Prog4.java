@@ -1,3 +1,4 @@
+
 /* Authors: Jessica McManus, Alexander Haufe, Aleksei Weinberg
  * Course: CSC 460 Database Design
  * Assignment: Program 4
@@ -14,8 +15,10 @@ import java.util.*;
 
 public class Prog4 {
 	
-	
+
 	/* runQuery()
+	 * NOTE: much of the code from this function was borrowed from
+	 *    L. McCann's JDBC.java
 	 * Parameters: query, a String that is a properly-formatted SQL query
 	 * Returns: answerSet, an ArrayList of ResultSet objects. 
 	 * Purpose: Takes an SQL query string and runs it through Oracle,
@@ -38,7 +41,10 @@ public class Prog4 {
 	 *       
 	 *    Hopefully, this helps!
 	 */
-	public static ArrayList<ResultSet> runQuery(String query) {
+	public static ArrayList<ArrayList<Object>> runQuery(String query) {
+		ArrayList<ArrayList<Object>> answerSet = new ArrayList<>();
+		Connection dbconn = null;
+		Statement stmt = null;
 		final String oracleURL = "jdbc:oracle:thin:@aloe.cs.arizona.edu:1521:oracle";
 
         String username = "alexanderxhaufe";
@@ -52,12 +58,13 @@ public class Prog4 {
 		catch (ClassNotFoundException e) {
 			System.err.println("*** ClassNotFoundException:  " + "Error loading Oracle JDBC driver.  \n"
 					+ "\tPerhaps the driver is not on the Classpath?");
-			System.exit(-1);
+			return answerSet;
 		}
 
 		// make and return a database connection to the user's
 		// Oracle database
-		Connection dbconn = null;
+		//Connection 
+		dbconn = null;
 		try {
 			dbconn = DriverManager.getConnection(oracleURL, username, password);
 
@@ -68,25 +75,36 @@ public class Prog4 {
 			System.err.println("\tMessage:   " + e.getMessage());
 			System.err.println("\tSQLState:  " + e.getSQLState());
 			System.err.println("\tErrorCode: " + e.getErrorCode());
-			System.exit(-1);
+			return answerSet;
 
 		}
 
 		// Send the query to the DBMS, and get and display the results
-		Statement stmt = null;
+		//Statement 
+		stmt = null;
 		ResultSet answer = null;
-		ArrayList<ResultSet> answerSet = new ArrayList<>();
+		
 		try {
 			stmt = dbconn.createStatement();
 			answer = stmt.executeQuery(query);
+			
 			if (answer != null) {
-
+				ResultSetMetaData md = answer.getMetaData();
+				int columns = md.getColumnCount();
 				/* we only really want to store the values so that they can be taken apart later
 				 * a base explanation of how to extract ResultSets is explained in the 
 				 *    head comment of this function.
 				 */
 				while (answer.next()) {
-					answerSet.add(answer);
+					ArrayList<Object> attrs = new ArrayList<>();
+
+				    for (int i = 1; i <= columns; i++) {
+				        //String columnName = md.getColumnName(i);
+				        Object value = answer.getObject(i);  // generic getter
+				        attrs.add(value);
+				        //System.out.print(value + " " + value.getClass().getName());
+				    }
+					answerSet.add(attrs);
 					//System.out.println(answer.getString("sno") + "\t" + answer.getInt("status"));
 				}
 			}
@@ -102,7 +120,7 @@ public class Prog4 {
 			System.err.println("\tMessage:   " + e.getMessage());
 			System.err.println("\tSQLState:  " + e.getSQLState());
 			System.err.println("\tErrorCode: " + e.getErrorCode());
-			System.exit(-1);
+			return answerSet;
 		}
 		
 		return answerSet;
@@ -157,16 +175,10 @@ public class Prog4 {
                 // TODO: finish this
                 break;
             case 2: // modify a table record
-                ModifyTable.modTable(tableNum, scanner, dbconn);
+                // TODO: implement this
                 break;
             case 3: // delete a record from a table
-                try {
-                    DeleteFromTable.deleteFromTable(tableNum, dbconn, scanner);
-                }
-                catch (SQLException e) {
-			        System.err.println("\tMessage:   " + e.getMessage());
-                    // TODO: handle exceptions that are thrown by deletefromtable
-                }
+                // TODO: implement this
                 break;
         }
         return;
@@ -209,13 +221,14 @@ public class Prog4 {
                     QueryHold.query1(dbconn, pet_name);
                     break;
                 case 2:
-                    QueryHold.query2(dbconn);
+                	String memberID = Common.inputString(scanner, "Enter memberID: ");
+                    QueryHold.query1(dbconn, memberID);
                     break;
                 case 3:
                     QueryHold.query3(dbconn);
                     break;
                 case 4:
-                    QueryHold.query4(dbconn, scanner);
+                    // TODO: query4
                     break;
                 default:
                     System.out.println("Invalid input\n");
@@ -284,16 +297,8 @@ public class Prog4 {
                 QueryMenu(dbconn, scanner);
             }
         }
+
         scanner.close();
-        try {
-            dbconn.close(); // close the database conn
-        } catch (SQLException e) {
-            System.err.println("*** SQLException:  "
-                    + "Could not close JDBC connection.");
-            System.err.println("\tMessage:   " + e.getMessage());
-            System.err.println("\tSQLState:  " + e.getSQLState());
-            System.err.println("\tErrorCode: " + e.getErrorCode());
-            System.exit(-1);
-        }
+
     }
 }
