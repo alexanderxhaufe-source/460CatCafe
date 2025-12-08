@@ -222,13 +222,14 @@ public class Prog4 {
                     break;
                 case 2:
                 	String memberID = Common.inputString(scanner, "Enter memberID: ");
-                    QueryHold.query1(dbconn, memberID);
+					//TODO change query2 to accept scanner or memberID
+                    QueryHold.query2(dbconn);
                     break;
                 case 3:
                     QueryHold.query3(dbconn);
                     break;
                 case 4:
-                    // TODO: query4
+                    QueryHold.query4(dbconn,scanner)
                     break;
                 default:
                     System.out.println("Invalid input\n");
