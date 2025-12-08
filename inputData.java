@@ -59,7 +59,7 @@ public class inputData {
                         Statement stmt = null;
                         ResultSet answer = null;
                         PreparedStatement toAdd = null;
-                        String baseAdd = "insert into TotalOrder values (?,?,?,?,?,?,TO_DATE(?, 'YYYY-MM-DD'))";
+                        String baseAdd = "insert into TotalOrder values (?,?,?,?,?,?,TO_DATE(?, 'YYYY-MM-DD'),?)";
                         toAdd = dbconn.prepareStatement(baseAdd);
 
                         try (BufferedReader stream = new BufferedReader(new FileReader("TotalOrder.csv"))) {
@@ -73,6 +73,7 @@ public class inputData {
                                         myDouble(toAdd, 5, splitRow[4]);
                                         myInt(toAdd, 6, splitRow[5]);
                                         toAdd.setString(7, splitRow[6]);
+					toAdd.setString(8, splitRow[7]);
 
                                         toAdd.addBatch();
                                 }
@@ -340,7 +341,7 @@ public class inputData {
                         Statement stmt = null;
                         ResultSet answer = null;
                         PreparedStatement toAdd = null;
-                        String baseAdd = "insert into HealthRecord values (?,?,?,TO_DATE(?, 'YYYY-MM-DD'),?,?,TO_DATE(?, 'YYYY-MM-DD'))";
+                        String baseAdd = "insert into HealthRecord values (?,?,?,TO_DATE(?, 'YYYY-MM-DD'),?,?,TO_DATE(?, 'YYYY-MM-DD'),?,?)";
                         toAdd = dbconn.prepareStatement(baseAdd);
 
                         try (BufferedReader stream = new BufferedReader(new FileReader("HealthRecord.csv"))) {
@@ -354,6 +355,8 @@ public class inputData {
                                         toAdd.setString(5, splitRow[4]);
                                         toAdd.setString(6, splitRow[5]);
                                         toAdd.setString(7, splitRow[6]);
+					toAdd.setString(8, splitRow[7]);
+					toAdd.setString(9, splitRow[8]);
 
                                         toAdd.addBatch();
                                 }

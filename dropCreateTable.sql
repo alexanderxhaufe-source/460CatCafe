@@ -18,6 +18,8 @@ CREATE TABLE TotalOrder (
         totalPrice number(6,2),
         paymentStatus number(1),
         orderDate date,
+	orderStatus varChar2(10),	
+        constraint chk_order_status check (orderStatus in ('placed', 'prepared', 'delivered')),
         primary key (orderID)
 );
 CREATE TABLE MenuItem (
@@ -97,6 +99,9 @@ CREATE TABLE HealthRecord (
         recordType varChar2(20),
         description varChar2(120),
         nextDueDate date,
+	validity varChar2(5),
+	invalidReason varChar2(120),
+        constraint chk_redacted check (validity in ('void', 'valid')),
         primary key (recordID)
 );
 CREATE TABLE Pet (
@@ -122,5 +127,4 @@ CREATE TABLE Adoption (
         primary key (appID),
         constraint chk_status check (status in ('pending', 'approved', 'rejected', 'withdrawn', 'recieved'))
 );
-
 
