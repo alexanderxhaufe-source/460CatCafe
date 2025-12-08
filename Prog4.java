@@ -229,7 +229,7 @@ public class Prog4 {
                     QueryHold.query3(dbconn);
                     break;
                 case 4:
-                    QueryHold.query4(dbconn,scanner)
+                    QueryHold.query4(dbconn,scanner);
                     break;
                 default:
                     System.out.println("Invalid input\n");
