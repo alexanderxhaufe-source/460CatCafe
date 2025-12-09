@@ -75,8 +75,7 @@ public class AddToTable {
 		String query = "INSERT INTO Adoption (appID, custID, petID, empID, appDate"
 				+ ", status, price) "
 				+ "VALUES (" + appID + ", " + custID + ", " + petID + ", "
-				+ empID + ", " + appDate + ", " + status + ", " + price
-				+ ");";
+				+ empID + ", " + appDate + ", '" + status + "', " + price+ ")";
 		// System.out.println("Successfully added new Adoption to datatable");
 		return query;
 		
@@ -98,7 +97,20 @@ public class AddToTable {
 		
 		custID = Common.inputNumber(scanner, "Enter custID: ");
 		bookDate = Common.inputString(scanner, "Enter bookDate (YYYY-MM-DD): ");
+		
 		eventID = Common.inputNumber(scanner, "Enter eventID: ");
+		while (true) {
+			ArrayList<Object> eventVal = (Prog4.runQuery("SELECT maxcapacity, regcust from event where roomid = " 
+				+ eventID)).get(0);
+			System.out.println(eventVal.size());
+			Object maxCapacity = eventVal.get(0);
+			Object regcust = eventVal.get(1);
+			if (((Number)regcust).intValue() > ((Number)maxCapacity).intValue())
+				eventID = Common.inputNumber(scanner, "Event is full, please put in another eventID: ");
+			else
+				break;
+		}
+		
 		attendanceStatus = Common.inputNumber(scanner, "Enter attendancee status (0/1): ");
 		paymentStatus = Common.inputNumber(scanner, "Enter payment status (0/1): ");
 		membershipTier = Common.inputNumber(scanner, "Enter membership tier (0,1,2): ");
@@ -109,7 +121,7 @@ public class AddToTable {
 				+ "eventID, attendanceStatus, paymentStatus, membershipTier) "
 				+ "VALUES (" + bookingID + ", " + custID + ", " + bookDate
 				+ ", " + eventID + ", " + attendanceStatus + ", "
-				+ paymentStatus + ", " + membershipTier + ");";
+				+ paymentStatus + ", " + membershipTier + ")";
 		// System.out.println("Successfully added new EventBooking to datatable");
 		return query;
 		
@@ -136,7 +148,6 @@ public class AddToTable {
 		recordType = Common.inputString(scanner, "Enter recordType: ");
 		description = Common.inputString(scanner, "Enter description: ");
 		nextDueDate = Common.inputString(scanner, "Enter next Due Date (YYYY-MM-DD): ");
-		description = Common.inputString(scanner, "Enter description: ");
 		int statusOption = 0;
 		while (true) {
 			System.out.println("Select validity:");
@@ -173,9 +184,9 @@ public class AddToTable {
 				+ "recordDate, recordType, description, nextDueDate, validity,"
 				+ " invalidReason) "
 				+ "VALUES (" + recordID + ", " + petID + ", " + employeeID
-				+ ", " + recordDate + ", " + recordType + ", " +
-				description + ", " + nextDueDate + ", " + validity + ", " 
-				+ invalidReason +");";
+				+ ", " + recordDate + ", '" + recordType + "', '" +
+				description + "', " + nextDueDate + ", '" + validity + "', '" 
+				+ invalidReason +"')";
 		// System.out.println("Successfully added new HealthRecord to datatable");
 		return query;
 		
@@ -211,11 +222,11 @@ public class AddToTable {
 		String query = "INSERT INTO Member (memberID, lastName, firstName, DoB, "
 				+ "email, membershipTier," + " emergencyContactAreaCode, "
 				+ "emergencyContact, phoneNoAreaCode, phoneNo) "
-				+ "VALUES (" + memberID + ", " + lastName + ", " +
-				firstName + ", " + DoB + ", " + email + ", " +
+				+ "VALUES (" + memberID + ", '" + lastName + "', '" +
+				firstName + "', " + DoB + ", '" + email + "', " +
 				membershipTier + ", " + emergencyContactAreaCode + ", " +
 				emergencyContact + ", " + phoneNoAreaCode + ", " + phoneNo
-				+ ");";
+				+ ")";
 		// System.out.println("Successfully added new Member to datatable");
 		return query;
 		
@@ -242,15 +253,15 @@ public class AddToTable {
 		arrivalDate = Common.inputString(scanner, "Enter pet arrival date ('YYYY-MM-DD'): ");
 		temperament = Common.inputString(scanner, "Enter pet temperament: ");
 		spNeeds = Common.inputString(scanner, "Enter special needs (y/n): ");
-		currStat = Common.inputString(scanner, "Enter pet status: ");
+		currStat = Common.inputString(scanner, "Enter pet status (vaccinated/injured/etc): ");
 		
 		arrivalDate = "TO_DATE(" + "\'" + arrivalDate + "\'" + ", \'YYYY-MM-DD\')";
 		
 		String query = "INSERT INTO Pet (petID, name, species, breed, age, "
 				+ "arrivalDate, temperament, spNeeds, currStat) "
-				+ "VALUES (" + petID + ", " + name + ", " + species + ", "
-				+ breed + ", " + age + ", " + arrivalDate + ", "
-				+ temperament + ", " + spNeeds + ", " + currStat + ");";
+				+ "VALUES (" + petID + ", '" + name + "', '" + species + "', '"
+				+ breed + "', " + age + ", " + arrivalDate + ", '"
+				+ temperament + "', '" + spNeeds + "', '" + currStat + "')";
 		// System.out.println("Successfully added new Pet to datatable");
 		return query;
 		
@@ -283,8 +294,8 @@ public class AddToTable {
 		String query = "INSERT INTO Reservation (reservationID, customerID, roomID"
 				+ ", resDate, startTime, duration, inStatus, membershipTier) "
 				+ "VALUES (" + reservationID + ", " + customerID + ", " +
-				roomID + ", " + resDate + ", " + startTime + ", " +
-				duration + ", " + inStatus + ", " + membershipTier + ");";
+				roomID + ", " + resDate + ", '" + startTime + "', '" +
+				duration + "', " + inStatus + ", " + membershipTier + ")";
 		// System.out.println("Successfully added new Reservation to datatable");
 		return query;
 		
@@ -342,13 +353,13 @@ public class AddToTable {
 			break;
 		}
 		orderDate = "TO_DATE(" + "\'" + orderDate + "\'" + ", \'YYYY-MM-DD\')";
-		orderTime = "TO_TIME(" + "\'" + orderTime + "\'" + ", \'HH:MM:SS\')";
+		//orderTime = "TO_TIME(" + "\'" + orderTime + "\'" + ", \'HH:MM:SS\')";
 		
 		String query = "INSERT INTO TotalOrder (orderID, memberID, reservationID,"
 				+ " orderTime, totalPrice, paymentStatus, orderDate, orderStatus) "
 				+ "VALUES (" + orderID + ", " + memberID + ", " +
-				reservationID + ", " + orderTime + ", " + totalPrice + ", "
-				+ paymentStatus + ", " + orderDate + ", " + orderStatus + ");";
+				reservationID + ", '" + orderTime + "', " + totalPrice + ", "
+				+ paymentStatus + ", " + orderDate + ", '" + orderStatus + "')";
 		// System.out.println("Successfully added new TotalOrder to datatable");
 		return query;
 		
@@ -395,7 +406,9 @@ public class AddToTable {
 	 */
 	
 	public static String addToTable(int tableValue, Scanner scanner) {
+		
 		String query = "";
+		scanner.nextLine();
 		switch (tableValue) {
 			case 1:
 				// add Adoption
