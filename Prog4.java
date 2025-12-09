@@ -167,10 +167,10 @@ public class Prog4 {
                 runQuery(statement);
                 break;
             case 2: // modify a table record
-                // TODO: implement this
+                ModifyTable.modTable(tableNum, scanner, dbconn);
                 break;
             case 3: // delete a record from a table
-                // TODO: implement this
+                DeleteFromTable.deleteFromTable(tableNum, dbconn, scanner);
                 break;
         }
         return;
@@ -214,13 +214,13 @@ public class Prog4 {
                     break;
                 case 2:
                 	String memberID = Common.inputString(scanner, "Enter memberID: ");
-                    QueryHold.query1(dbconn, memberID);
+                    QueryHold.query2(dbconn, memberID);
                     break;
                 case 3:
                     QueryHold.query3(dbconn);
                     break;
                 case 4:
-                    // TODO: query4
+                    QueryHold.query4(dbconn,scanner);
                     break;
                 default:
                     System.out.println("Invalid input\n");
