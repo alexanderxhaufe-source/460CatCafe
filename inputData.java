@@ -1,17 +1,26 @@
-/* Authors: Jessica McManus, Alexander Haufe, Aleksei Weinberg
+/* inputData.java
+ * Authors: Jessica McManus, Alexander Haufe, Aleksei Weinberg
  * Course: CSC 460 Database Design
  * Assignment: Program 4
  * Instructor/TAs: L. McCann, J. Shenn, U. Upadhyay
  * Due: 12/8/2025
- * Description: This program acts as a front end for a database containing
- * information about a cat cafe. It is meant to do queries and allow
- * for manipulation of the database.
- * Requirements: Java 16, Oracle JDBC driver, Oracle DBMS access
+ * Description: This program is just a giant csv reader that populates
+ *   all of our Oracle tables through our pockets csv files. 
+ *   THIS PROGRAM IS NOT REQUIRED FOR RUNNING PROG4.JAVA
 */
 import java.io.*;
 import java.sql.*;
 
 public class inputData {
+
+	/*
+	myDouble()
+	Parameters: stat, a PreparedStatement that holds the query to run
+				idx, an int holding the index of prepared statement to add to
+				toParse, a string that will be changed to a double
+	Returns: none
+	Parses a string to a double... not much to say
+	*/
         private static void myDouble(PreparedStatement stat, int idx, String toParse) throws SQLException {
                 if (toParse == null || toParse.trim().isEmpty()) {
                         stat.setNull(idx, java.sql.Types.DOUBLE);
@@ -20,6 +29,16 @@ public class inputData {
                 }
         }
 
+	/*
+	myInt()
+	Parameters: stat, a PreparedStatement that holds the query to run
+				idx, an int holding the index of prepared statement to add to
+				toParse, a string that will be changed to an int
+	Returns: none
+	Parses a string to an int... not much to say
+	This code is a modified version of Dr. McMann's JDBC.java file supplied
+	   for Prog3.
+	*/
         private static void myInt(PreparedStatement stat, int idx, String toParse) throws SQLException {
                 if (toParse == null || toParse.trim().isEmpty()) {
                         stat.setNull(idx, java.sql.Types.INTEGER);
@@ -29,6 +48,7 @@ public class inputData {
         }
 
         public static void main(String[] args) {
+				// the following is general stuff for connecting to Oracle
                 final String oracleURL = "jdbc:oracle:thin:@aloe.cs.arizona.edu:1521:oracle";
 
                 String username = "alexanderxhaufe";
@@ -53,15 +73,17 @@ public class inputData {
                         System.err.println("\tErrorCode:        " + e.getErrorCode());
                         System.exit(-1);
                 }
-
+				// time to start reading in csv files!
+				// each of the following try/catch are copied from each other
                 try {
-
+					// read in TotalOrder.csv
                         Statement stmt = null;
                         ResultSet answer = null;
                         PreparedStatement toAdd = null;
                         String baseAdd = "insert into TotalOrder values (?,?,?,?,?,?,TO_DATE(?, 'YYYY-MM-DD'),?)";
                         toAdd = dbconn.prepareStatement(baseAdd);
 
+						// read in contents from file and add to String baseAdd
                         try (BufferedReader stream = new BufferedReader(new FileReader("TotalOrder.csv"))) {
                                 String row = null;
                                 while ((row = stream.readLine()) != null) {
@@ -91,7 +113,7 @@ public class inputData {
                 }
 
                 try {
-
+					// read in MenuItem.csv
                         Statement stmt = null;
                         ResultSet answer = null;
                         PreparedStatement toAdd = null;
@@ -123,7 +145,7 @@ public class inputData {
                 }
 
                 try {
-
+						// read in Member.csv
                         Statement stmt = null;
                         ResultSet answer = null;
                         PreparedStatement toAdd = null;
@@ -162,7 +184,7 @@ public class inputData {
                 }
 
                 try {
-
+						// read in EventBooking.csv
                         Statement stmt = null;
                         ResultSet answer = null;
                         PreparedStatement toAdd = null;
@@ -197,7 +219,7 @@ public class inputData {
                 }
 
                 try {
-
+						// read in Reservation.csv
                         Statement stmt = null;
                         ResultSet answer = null;
                         PreparedStatement toAdd = null;
@@ -234,7 +256,7 @@ public class inputData {
                 }
 
                 try {
-
+						// read in Room.csv
                         Statement stmt = null;
                         ResultSet answer = null;
                         PreparedStatement toAdd = null;
@@ -267,7 +289,7 @@ public class inputData {
                 }
 
                 try {
-
+						// read in FileReader.csv
                         Statement stmt = null;
                         ResultSet answer = null;
                         PreparedStatement toAdd = null;
@@ -305,7 +327,7 @@ public class inputData {
                 }
 
                 try {
-
+						// read in Employee.csv
                         Statement stmt = null;
                         ResultSet answer = null;
                         PreparedStatement toAdd = null;
@@ -337,7 +359,7 @@ public class inputData {
                 }
 
                 try {
-
+						// read in HealthRecord.csv
                         Statement stmt = null;
                         ResultSet answer = null;
                         PreparedStatement toAdd = null;
@@ -374,7 +396,7 @@ public class inputData {
                 }
 
                 try {
-
+						// read in Pet.csv
                         Statement stmt = null;
                         ResultSet answer = null;
                         PreparedStatement toAdd = null;
@@ -411,7 +433,7 @@ public class inputData {
                 }
 
                 try {
-
+						// read in Adoption.csv
                         Statement stmt = null;
                         ResultSet answer = null;
                         PreparedStatement toAdd = null;
@@ -449,3 +471,4 @@ public class inputData {
                 System.out.println("All tables added to successfully!");
         }
 }
+
