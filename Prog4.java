@@ -222,7 +222,7 @@ public class Prog4 {
                     break;
                 case 2:
                 	String memberID = Common.inputString(scanner, "Enter memberID: ");
-			//TODO get working
+			//TODO change query2 to accept scanner or memberID
                     QueryHold.query2(dbconn);
                     break;
                 case 3:
