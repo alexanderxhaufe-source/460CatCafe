@@ -1,4 +1,3 @@
-
 /* Authors: Jessica McManus, Alexander Haufe, Aleksei Weinberg
  * Course: CSC 460 Database Design
  * Assignment: Program 4
@@ -172,13 +171,13 @@ public class Prog4 {
             case 1: // add a record to table
                 String statement = AddToTable.addToTable(tableNum, scanner);
                 System.out.println(statement); // testing to display the generated SQL statement
-                // TODO: finish this
+                runQuery(statement);
                 break;
             case 2: // modify a table record
                 // TODO: implement this
                 break;
             case 3: // delete a record from a table
-                DeleteFromTable.deleteFromTable(tableNum, dbconn, scanner);
+                // TODO: implement this
                 break;
         }
         return;
@@ -222,14 +221,13 @@ public class Prog4 {
                     break;
                 case 2:
                 	String memberID = Common.inputString(scanner, "Enter memberID: ");
-			//TODO change query2 to accept scanner or memberID
-                    QueryHold.query2(dbconn);
+                    QueryHold.query1(dbconn, memberID);
                     break;
                 case 3:
                     QueryHold.query3(dbconn);
                     break;
                 case 4:
-                    QueryHold.query4(dbconn,scanner);
+                    // TODO: query4
                     break;
                 default:
                     System.out.println("Invalid input\n");
@@ -240,7 +238,7 @@ public class Prog4 {
             System.err.println("\tMessage:   " + e.getMessage());
             System.err.println("\tSQLState:  " + e.getSQLState());
             System.err.println("\tErrorCode: " + e.getErrorCode());
-            return;
+            System.exit(-1);
         }
     }
 
