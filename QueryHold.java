@@ -79,7 +79,7 @@ public class QueryHold {
          *
          *         ** CURRENTLY UNTESTED
          */
-         public static void query2(Connection dbconn) throws SQLException {
+         public static void query2(Connection dbconn, Scanner stream, String memberID) throws SQLException {
                  Statement stmt = null; // statement to execute SQL query
                  ResultSet answer = null; // result set returned by the query
                  // list all upcoming events that have available capacity
@@ -96,7 +96,7 @@ public class QueryHold {
 					r.membershipTier
 				FROM alexanderxhaufe.Member m
 				JOIN alexanderxhaufe.Reservation r
-					ON m.membershipID = r.customerID
+					ON m.memberID = r.customerID
 				JOIN alexanderxhaufe.room rm
 					ON r.roomID = rm.roomID
 				JOIN alexanderxhaufe.TotalOrder o
@@ -122,7 +122,7 @@ public class QueryHold {
                  }
                  System.out.println();
                  stmt.close();
-         }	//query2();
+         }
 
         /*
         * Method: query3
@@ -207,6 +207,7 @@ public class QueryHold {
                 stmt.close();
         }
 }
+
 
 
 
