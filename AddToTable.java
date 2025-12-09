@@ -286,7 +286,7 @@ public class AddToTable {
 		resDate = Common.inputString(scanner, "Enter reservation date ('YYYY-MM-DD'): ");
 		startTime = Common.inputString(scanner, "Enter start time (HH:MM AM/PM): ");
 		duration = Common.inputString(scanner, "Enter duration (HH:MM): ");
-		inStatus = Common.inputNumber(scanner, "Enter pet status (0/1): ");
+		inStatus = Common.inputNumber(scanner, "Enter in Room status (0/1): ");
 		membershipTier = Common.inputNumber(scanner, "Enter membership tier (0,1,2): ");
 		
 		resDate = "TO_DATE(" + "\'" + resDate + "\'" + ", \'YYYY-MM-DD\')";
