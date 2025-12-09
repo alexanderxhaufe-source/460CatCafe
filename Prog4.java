@@ -170,7 +170,7 @@ public class Prog4 {
         switch (action) {
             case 1: // add a record to table
                 String statement = AddToTable.addToTable(tableNum, scanner);
-                System.out.println(statement); // testing to display the generated SQL statement
+                //System.out.println(statement); // testing to display the generated SQL statement
                 runQuery(statement);
                 break;
             case 2: // modify a table record
