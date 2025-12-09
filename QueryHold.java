@@ -79,7 +79,7 @@ public class QueryHold {
          *
          *         ** CURRENTLY UNTESTED
          */
-         public static void query2(Connection dbconn, Scanner stream, String memberID) throws SQLException {
+         public static void query2(Connection dbconn, String memberID) throws SQLException {
                  Statement stmt = null; // statement to execute SQL query
                  ResultSet answer = null; // result set returned by the query
                  // list all upcoming events that have available capacity
@@ -207,6 +207,7 @@ public class QueryHold {
                 stmt.close();
         }
 }
+
 
 
 
