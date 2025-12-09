@@ -103,7 +103,9 @@ public class QueryHold {
 					ON r.reservationID = o.reservationID
 				LEFT JOIN alexanderxhaufe.MenuItem mi
 					ON o.orderID = mi.orderID
-				WHERE m.memberID = :memberID
+				WHERE m.memberID = """
+				+memberID+
+				"""
 				ORDER BY r.resDate	
 				""";
                  stmt = dbconn.createStatement();
@@ -207,6 +209,7 @@ public class QueryHold {
                 stmt.close();
         }
 }
+
 
 
 
