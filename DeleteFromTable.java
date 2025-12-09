@@ -37,18 +37,16 @@ public class DeleteFromTable {
 	 * Purpose: This function is meant to act as a hub for all delete
 	 * statements in the program! It works with switch statements, each int
 	 * representing a different Table in our DB (see above, in Parameters).
-	 * Once a query is crafted, it gets returned so that the query can be
-	 * sent to Oracle.
+	 * Then the logic to check for deletion is run. If the logic passes, 
+	 * the deletion is made. If not, a message is printed as to why.
 	 * 
-	 * 
-	 * Some of the variables have names that end in numbers. Due to the way
-	 * switch statements work (special fellas, aren't they?), I either would
-	 * have to declare all of the variables before entering the switch
-	 * statement, or would have to give all vars unique names; I chose the
-	 * latter option :/
 	 * -----------------------------------------------------------------------
 	 */
     private static void deleteFromAdoption(Connection dbconn, Scanner scanner) {
+        /* Delete from Adoption table takes in a user input appID to delete.
+         * This function then determines if the application is pending, if so it deletes
+         * the record. If not pending, it updates the status to withdrawn.
+         */
         while (true){
             System.out.println("Enter the appID to delete or -1 to cancel:");
 
@@ -94,6 +92,11 @@ public class DeleteFromTable {
         
     }
     private static void deleteFromEventBooking(Connection dbconn, Scanner scanner) {
+        /*
+         * Delete from EventBooking table takes in a user input bookingID to delete.
+         * This function then determines if the booking's paymentStatus is 2, meaning refunded,
+         * and if so it deletes the record.
+         */
         while (true){
             System.out.println("Enter the bookingID of what to delete or -1 to cancel:");
             try {
@@ -136,6 +139,13 @@ public class DeleteFromTable {
         return;	
     }
     private static void deleteFromMember(Connection dbconn, Scanner scanner) {
+        /* Delete from Member table takes in a user input memberID to delete.
+         * Then it performs the following checks:
+         * 1. ensures the member does not have any future reservations
+         * 2. ensures the member does not have any pending adoption applications
+         * 3. ensures the member does not have any unpaid food orders
+         * If all checks are passed, the member and all related records are deleted.
+         */
         while (true){
             System.out.println("Enter the memberID of the account to delete or -1 to cancel:");
             try {
@@ -280,6 +290,10 @@ public class DeleteFromTable {
         return;
     }
     private static void deleteFromPet(Connection dbconn, Scanner scanner) {
+        /* Delete From Pet table takes in a user input petID to delete. 
+         * Then it verifies that the pet does not have any pending adoption applications.
+         * If there are no pending applications, the pet record is deleted.
+         */
         while (true){
             System.out.println("Enter the petID of the pet record to remove or -1 to cancel");
             try {
@@ -341,6 +355,11 @@ public class DeleteFromTable {
         return;
     }
     private static void deleteFromReservation(Connection dbconn, Scanner scanner) {
+        /* Delete from Reservation table takes in a user input reservationID to delete.
+         * Then it verifies that the reservation is for a future date and that there are no
+         * associated food orders that are not canceled/refunded.
+         * If both checks are passed, the reservation is deleted.
+         */
         while (true){
             System.out.println("Enter the reservationID of the resrvation to delete or -1 to cancel");
             try {
@@ -413,6 +432,10 @@ public class DeleteFromTable {
         return;
     }
     private static void deleteFromTotalOrder(Connection dbconn, Scanner scanner) {
+        /* Delete from TotalOrder table takes in a user input orderID to delete.
+         * Then it verifies that the orderStatus is 'placed', meaning no items have been prepared or delivered.
+         * If the check is passed, the order is deleted.
+         */
         while (true){
             System.out.println("Enter the orderID of the order to delete or -1 to cancel");
             try {
@@ -463,6 +486,19 @@ public class DeleteFromTable {
         return;
     }
 	public static void deleteFromTable(int tableValue, Connection dbconn, Scanner scanner){
+        /* Delete from Table is the main function that directs to the specific
+         * delete functions for each table. It takes in an int representing
+         * the table to delete from, a connection to the database, and a scanner
+         * for user input.
+         * The tableValue int corresponds to the following tables:
+         * 1. Adoption
+         * 2. EventBooking
+         * 3. HealthRecord (will not delete, only print a message to mark it as void)
+         * 4. Member
+         * 5. Pet
+         * 6. Reservation
+         * 7. TotalOrder
+         */
 			String query = "";
 			int userChoice = 0;
 			Statement stmt = null;
