@@ -47,6 +47,11 @@ public class DeleteFromTable {
          * This function then determines if the application is pending, if so it deletes
          * the record. If not pending, it updates the status to withdrawn.
          */
+        String query = "";
+		int userChoice = 0;
+		Statement stmt = null;
+		ResultSet answer = null;
+		
         while (true){
             System.out.println("Enter the appID to delete or -1 to cancel:");
 
@@ -97,6 +102,11 @@ public class DeleteFromTable {
          * This function then determines if the booking's paymentStatus is 2, meaning refunded,
          * and if so it deletes the record.
          */
+        String query = "";
+		int userChoice = 0;
+		Statement stmt = null;
+		ResultSet answer = null;
+		
         while (true){
             System.out.println("Enter the bookingID of what to delete or -1 to cancel:");
             try {
@@ -146,6 +156,11 @@ public class DeleteFromTable {
          * 3. ensures the member does not have any unpaid food orders
          * If all checks are passed, the member and all related records are deleted.
          */
+        String query = "";
+		int userChoice = 0;
+		Statement stmt = null;
+		ResultSet answer = null;
+		
         while (true){
             System.out.println("Enter the memberID of the account to delete or -1 to cancel:");
             try {
@@ -290,6 +305,11 @@ public class DeleteFromTable {
         return;
     }
     private static void deleteFromPet(Connection dbconn, Scanner scanner) {
+        String query = "";
+		int userChoice = 0;
+		Statement stmt = null;
+		ResultSet answer = null;
+		
         /* Delete From Pet table takes in a user input petID to delete. 
          * Then it verifies that the pet does not have any pending adoption applications.
          * If there are no pending applications, the pet record is deleted.
@@ -360,6 +380,11 @@ public class DeleteFromTable {
          * associated food orders that are not canceled/refunded.
          * If both checks are passed, the reservation is deleted.
          */
+        String query = "";
+		int userChoice = 0;
+		Statement stmt = null;
+		ResultSet answer = null;
+			
         while (true){
             System.out.println("Enter the reservationID of the resrvation to delete or -1 to cancel");
             try {
@@ -436,6 +461,11 @@ public class DeleteFromTable {
          * Then it verifies that the orderStatus is 'placed', meaning no items have been prepared or delivered.
          * If the check is passed, the order is deleted.
          */
+        String query = "";
+		int userChoice = 0;
+		Statement stmt = null;
+		ResultSet answer = null;
+			
         while (true){
             System.out.println("Enter the orderID of the order to delete or -1 to cancel");
             try {
@@ -499,10 +529,6 @@ public class DeleteFromTable {
          * 6. Reservation
          * 7. TotalOrder
          */
-			String query = "";
-			int userChoice = 0;
-			Statement stmt = null;
-			ResultSet answer = null;
 			switch (tableValue) {
 				case 1:
 					//delete from Adoption
