@@ -17,9 +17,11 @@ public class Prog4 {
 
 	/* runQuery()
 	 * NOTE: much of the code from this function was borrowed from
-	 *    L. McCann's JDBC.java
+	 *    L. McCann's JDBC.java and Jessica McManus's Prog3.java
 	 * Parameters: query, a String that is a properly-formatted SQL query
-	 * Returns: answerSet, an ArrayList of ResultSet objects. 
+	 * Returns: an ArrayList of ArrayLists of Objects. Each row of the 
+	 *      query is saved as an array list, where all rows are their 
+	 *	    own array list.
 	 * Purpose: Takes an SQL query string and runs it through Oracle,
 	 *    returning the output of the query as an ArrayList of 
 	 *    ResultSet objects
@@ -28,16 +30,7 @@ public class Prog4 {
 	 * ResultSet objects are used to store entire entries from SQL 
 	 *    queries, and for convenience of multi-purpose use, it made
 	 *    the most sense to return an ArrayList that could then be
-	 *    manipulated for other use!
-	 *    
-	 *  how ResultSets work:
-	 *    for each ResultSet, you will have a row of a query responses. To get the
-	 *    data you need (where answerSet is an array of ResultSet objects:
-	 *       for (int i=0; i<answerSet.size(); i++){
-	 *          value = (answerSet.get(i)).getString/Int/ETC("NAME_OF_ATTRIBUTE")
-	 *          and now do whatever you need with value!
-	 *       }
-	 *       
+	 *    manipulated for other use!   
 	 *    Hopefully, this helps!
 	 */
 	public static ArrayList<ArrayList<Object>> runQuery(String query) {
@@ -115,15 +108,15 @@ public class Prog4 {
 
 		} 
 		catch (SQLException e) {
+		// this section is just for testing-- if a set is null, half the time there is no return answer
+			/*
 			System.err.println("*** SQLException:  " + "Could not fetch query results.");
 			System.err.println("\tMessage:   " + e.getMessage());
 			System.err.println("\tSQLState:  " + e.getSQLState());
-			System.err.println("\tErrorCode: " + e.getErrorCode());
-			return answerSet;
+			System.err.println("\tErrorCode: " + e.getErrorCode());*/
 		}
-		
 		return answerSet;
-	}
+	}	// runQuery();
 
     /*
      * Method: manipMenu (short for manipulation menu)
