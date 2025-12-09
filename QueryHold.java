@@ -1,11 +1,12 @@
-/* Authors: Jessica McManus, Alexander Haufe, Aleksei Weinberg
+/* QueryHold.java
+ * Authors: Jessica McManus, Alexander Haufe, Aleksei Weinberg
  * Course: CSC 460 Database Design
  * Assignment: Program 4
  * Instructor/TAs: L. McCann, J. Shenn, U. Upadhyay
  * Due: 12/8/2025
- * Description: This program acts as a front end for a database containing
- * information about a cat cafe. It is meant to do queries and allow
- * for manipulation of the database.
+ * Description: This program holds all of the queries for Prog4.java
+ *   each function in this program holds the code for a different query.
+ *   
  * Requirements: Java 16, Oracle JDBC driver, Oracle DBMS access
 */
 import java.io.*;
@@ -64,8 +65,8 @@ public class QueryHold {
                 stmt.close();
         }
 
-                /*
-         * Method: query3
+        /*
+         * Method: query2
          * Purpose: print a list of customer visit history
          * Parameters: Connection dbconn - the connection to the database
          * Returns: void
@@ -160,6 +161,18 @@ public class QueryHold {
                 System.out.println();
                 stmt.close();
         }
+
+	    /*
+         * Method: query4
+         * Purpose: print a list of pet information per employee's adoption apps
+         * Parameters: Connection dbconn - the connection to the database
+		 *             stream, a scanner object
+         * Returns: void
+         * Throws: SQLException - if a database error occurs
+         * 
+         * Query: For a given employee, list the pet information for all pending 
+		 *    adoption application(s) assigned to that employee
+         */
         public static void query4(Connection dbconn, Scanner stream) throws SQLException {
                 System.out.println("Enter the employee's first name");
                 String empFName = stream.nextLine();
@@ -194,6 +207,7 @@ public class QueryHold {
                 stmt.close();
         }
 }
+
 
 
 
