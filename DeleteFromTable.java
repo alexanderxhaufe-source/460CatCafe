@@ -79,10 +79,10 @@ public class DeleteFromTable {
 						stmt = dbconn.createStatement();
 						answer = stmt.executeQuery(query);
 						if (answer.next()){
-							if (answer.getString("status")=="pending"){
+							if (answer.getString("status").equals("pending")){
 								query = "delete from Adoption where appID = '"+userChoice+"'";
 							} else {
-								query = "update Adoption set status = withdrawn where appID = '"+userChoice+"'";
+								query = "update Adoption set status = 'withdrawn' where appID = '"+userChoice+"'";
 							}
 							stmt = dbconn.createStatement();
 							stmt.executeQuery(query);
@@ -170,11 +170,11 @@ public class DeleteFromTable {
 
 					//check for future reservations
 					try {
-						query = "select Member.*, Reservation.bookDate, Reservation.reservationID"
+						query = "select Member.*, Reservation.resDate, Reservation.reservationID "
 							+"from Member, Reservation "
 							+"where Member.memberID = '"+userChoice+"' "
-							+"and Member.memberID = Reservation.memberID "
-							+"and Reservation.bookDate > SYSDATE";
+							+"and Member.memberID = Reservation.customerID "
+							+"and Reservation.resDate > SYSDATE";
 						stmt = dbconn.createStatement();
 						answer = stmt.executeQuery(query);
 						if (answer.next()){
@@ -192,8 +192,8 @@ public class DeleteFromTable {
 						query = "select Member.*, Adoption.appID "
 							+"from Member, Adoption "
 							+"where Member.memberID = '"+userChoice+"' "
-							+"and Member.memberID = Adoption.memberID "
-							+"and Adoption.status = pending";
+							+"and Member.memberID = Adoption.custID "
+							+"and Adoption.status = 'pending'";
 						stmt = dbconn.createStatement();
 						answer = stmt.executeQuery(query);
 						if (answer.next()){
@@ -228,7 +228,7 @@ public class DeleteFromTable {
 						}
 					} catch (SQLException e) {
 						System.err.println("*** SQLException:  "
-								+ "Could verify member is ready for deletion.");
+								+ "Could not verify member is ready for deletion.");
 						System.err.println("\tMessage:   " + e.getMessage());
 						System.err.println("\tSQLState:  " + e.getSQLState());
 						System.err.println("\tErrorCode: " + e.getErrorCode());
@@ -241,16 +241,16 @@ public class DeleteFromTable {
 					
 					//deleting members old reservations
 					try {
-						query = "select Member.*, Reservation.bookDate, Reservation.reservationID "
+						query = "select Member.*, Reservation.resDate, Reservation.reservationID "
 							+"from Member, Reservation "
 							+"where Member.memberID = '"+userChoice+"' "
-							+"and Member.memberID = Reservation.memberID ";
+							+"and Member.memberID = Reservation.customerID ";
 						stmt = dbconn.createStatement();
 						answer = stmt.executeQuery(query);
 						while (answer.next()){
 							query = "delete from Reservation where reservationID = '"+answer.getInt("reservationID")+"'";
 							stmt = dbconn.createStatement();
-							answer = stmt.executeQuery(query);
+							stmt.executeQuery(query);
 						}
 
 						//deleting members old pet applications
@@ -263,9 +263,8 @@ public class DeleteFromTable {
 						while (answer.next()){
 							query = "delete from Adoption where appID = '"+answer.getInt("appID")+"'";
 							stmt = dbconn.createStatement();
-							answer = stmt.executeQuery(query);
+							stmt.executeQuery(query);
 						}
-
 						//deleting members old evenBookings
 						query = "select Member.*, EventBooking.bookingID "
 							+"from Member, EventBooking "
@@ -276,7 +275,7 @@ public class DeleteFromTable {
 						while (answer.next()){
 							query = "delete from EventBooking where bookingID = '"+answer.getInt("bookingID")+"'";
 							stmt = dbconn.createStatement();
-							answer = stmt.executeQuery(query);
+							stmt.executeQuery(query);
 						}
 						
 						//deteting member account
@@ -319,7 +318,7 @@ public class DeleteFromTable {
 							+"from Pet, Adoption "
 							+"where Pet.petID = '"+userChoice+"' "
 							+"and Pet.petID = Adoption.petID "
-							+"and Adoption.status = pending";
+							+"and Adoption.status = 'pending'";
 						stmt = dbconn.createStatement();
 						answer = stmt.executeQuery(query);
 						if (answer.next()){
@@ -452,7 +451,7 @@ public class DeleteFromTable {
 					try {
 						query = "select * from TotalOrder "
 							+"where orderID = '"+userChoice+"' "
-							+"and status <> placed";
+							+"and orderStatus <> 'placed'";
 						stmt = dbconn.createStatement();
 						answer = stmt.executeQuery(query);
 						if (answer.next()){
@@ -479,7 +478,7 @@ public class DeleteFromTable {
 						System.err.println("\tErrorCode: " + e.getErrorCode());
 						return;
 					}
-					System.out.println("Order with orderID "+userChoice+"deleted");
+					System.out.println("Order with orderID "+userChoice+" deleted");
 					return;
 
 				default:
